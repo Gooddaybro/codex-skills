@@ -1,0 +1,4 @@
+interface:
+  display_name: "Learn Project"
+  short_description: "Guide hands-on project learning."
+  default_prompt: "Help me learn this project topic step by step."

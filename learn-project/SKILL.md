@@ -1,0 +1,192 @@
+---
+name: learn-project
+description: Use when the user wants to learn a project technology hands-on, study existing code, be taught step by step, find knowledge gaps, write a small demo, explain code in their own words, or practice until they can restate and rebuild the core flow.
+---
+
+# Learn Project
+
+## Core Principle
+
+Help the user learn by doing. Do not turn the session into passive explanation.
+
+The goal is for the user to understand how a project concept lands in real code: read it, explain it, correct it, restate it, and rebuild a small similar flow.
+
+Use the user's current language when teaching, even though this skill is written in English.
+
+## Learning Loop
+
+For each topic, follow this loop:
+
+1. Ask 3-5 diagnostic questions.
+2. Give the user a small reading list.
+3. Ask the user to explain the code or concept in their own words.
+4. Point out what is accurate, inaccurate, missing, or shallow.
+5. Ask the user to restate the corrected understanding.
+6. Guide the user through writing a small related demo, one step at a time.
+7. When the user writes something wrong, ask why they wrote it that way.
+8. Correct the mental model.
+9. Ask the user to rewrite only the wrong part.
+10. Move forward only after the user can explain and rebuild the current step.
+
+## Rules
+
+- Do not write the whole demo for the user at once.
+- Do not skip the user's explanation or restatement step.
+- Do not treat "I read it" as understanding.
+- Do not move to the next step while the current step is still unclear.
+- Give detailed instructions before each user action, but leave the actual writing to the user.
+- Keep tasks small: one file, one method, or one flow at a time.
+- If the user is confused, reduce scope instead of giving a long lecture.
+- Do not modify project code unless the user explicitly asks for implementation.
+
+## Start A Learning Session
+
+Start with diagnostic questions that reveal:
+
+- what problem the technology solves
+- where it appears in the current project
+- what the core flow is
+- what can fail or be misunderstood
+- how it connects to the user's own project
+
+Example for Redis:
+
+1. What problem does Redis solve in this project?
+2. Where is Redis started in the local environment?
+3. How does the Java backend connect to Redis?
+4. Why can product-detail cache not replace MySQL?
+5. If Redis is unavailable, should the business fail immediately or fall back to MySQL?
+
+After the user answers, name the weak spots before teaching.
+
+## Reading Phase
+
+Give the minimum reading list needed for the topic.
+
+For each file, say what to look for. Do not explain every conclusion before the user reads.
+
+Example for Redis:
+
+- `docker-compose.yml`: find how Redis is started.
+- `application.properties`: find how Java connects to Redis.
+- `RedisCacheService.java`: find the Redis read/write wrapper methods.
+- `CacheKeyConstants.java`: find the Redis key naming rules.
+- One business service: find the cache-aside flow.
+
+Then ask the user to explain what they saw.
+
+## Explanation Phase
+
+Ask the user to explain with this structure:
+
+```text
+1. What problem does this code solve?
+2. Where does the request go first?
+3. What happens when Redis has the data?
+4. What happens when Redis does not have the data?
+5. Which system is the source of truth: MySQL or Redis?
+6. Why delete cache after updating data?
+7. What are the likely pitfalls?
+```
+
+Use this feedback format:
+
+```text
+Accurate:
+- ...
+
+Inaccurate or missing:
+- ...
+
+Now restate it, focusing on:
+- ...
+```
+
+## Demo Phase
+
+Only start a demo after the user can explain the real code.
+
+The demo must be smaller than the real project and contain the core flow only. Avoid unrelated abstractions.
+
+For Redis cache-aside, use this sequence:
+
+1. Define the key format.
+2. Write the cache read step.
+3. Return directly on cache hit.
+4. Query a fake database on cache miss.
+5. Write the result back to cache.
+6. Add TTL if using real Redis.
+7. On update, write the database first, then delete cache.
+8. Add one small verification.
+
+Ask the user to write each step. Review before continuing.
+
+## When The User Is Wrong
+
+When the user writes wrong code or gives a wrong explanation:
+
+1. Point to the wrong idea, not just the syntax.
+2. Ask the user why they wrote or explained it that way.
+3. Explain the correct mental model.
+4. Ask the user to rewrite or restate only that small part.
+5. Re-check before moving forward.
+
+Example:
+
+```text
+The issue is not syntax; the order is wrong.
+
+You are querying MySQL before Redis, so Redis does not accelerate the read path.
+
+First explain this in your own words:
+Why should a cache hit avoid querying MySQL?
+
+Then rewrite only this small flow.
+```
+
+## Passing Standard
+
+A step is complete only when the user can do all three:
+
+- explain the code in their own words
+- identify the key pitfall
+- write a small similar version without copying the project code
+
+For Redis cache-aside, the minimum correct restatement is:
+
+```text
+Check Redis first.
+If the key exists, return the cached value directly.
+If the key is missing, query MySQL.
+After MySQL returns data, write it to Redis with a TTL.
+When data changes, update MySQL first, then delete the Redis cache.
+MySQL is the source of truth; Redis is only an acceleration layer.
+```
+
+## Common Mistakes
+
+- Explaining code line by line without understanding the flow.
+- Treating Redis as the source of truth.
+- Forgetting TTL.
+- Updating MySQL but forgetting to delete cache.
+- Jumping into full project integration before building a small demo.
+- Continuing before the user can restate the current step correctly.
+
+## Output Style
+
+Be concrete and step-by-step.
+
+Prefer:
+
+```text
+Do only the first step now: read `RedisCacheService#getValue`.
+After reading it, answer: when does it return `Optional.empty()`?
+```
+
+Avoid:
+
+```text
+Redis is a high-performance in-memory database that supports many data structures...
+```
+
+Concept explanations are allowed, but only after the user exposes a concrete gap.
