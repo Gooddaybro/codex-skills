@@ -1,6 +1,6 @@
 ---
 name: learn-project
-description: Use when the user wants to learn a project technology hands-on, study existing code, be taught step by step, find knowledge gaps, write a small demo, explain code in their own words, or practice until they can restate and rebuild the core flow.
+description: Use when the user wants to learn a project technology hands-on, connect new backend or AI project knowledge to prior knowledge, study existing code, be taught step by step, find knowledge gaps, write a small demo, explain code in their own words, or practice until they can restate and rebuild the core flow.
 ---
 
 # Learn Project
@@ -11,6 +11,8 @@ Help the user learn by doing. Do not turn the session into passive explanation.
 
 The goal is for the user to understand how a project concept lands in real code: read it, explain it, correct it, restate it, and rebuild a small similar flow.
 
+Every new concept must be attached to old knowledge the user already has. Build a knowledge network, not isolated definitions.
+
 Use the user's current language when teaching, even though this skill is written in English.
 
 ## Learning Loop
@@ -18,16 +20,18 @@ Use the user's current language when teaching, even though this skill is written
 For each topic, follow this loop:
 
 1. Ask 3-5 diagnostic questions.
-2. Give the user a small reading list.
-3. Ask the user to explain the code or concept in their own words.
-4. Point out what is accurate, inaccurate, missing, or shallow.
-5. Ask the user to restate the corrected understanding.
-6. If the user lacks the syntax pattern, show one minimal correct example plus the logic checklist first, then ask the user to rewrite it from memory instead of copying.
-7. Guide the user through writing a small related demo, one step at a time.
-8. When the user writes something wrong, ask why they wrote it that way.
-9. Correct the mental model.
-10. Ask the user to rewrite only the wrong part.
-11. Move forward only after the user can explain and rebuild the current step.
+2. Identify 3-5 old knowledge anchors the new topic should connect to.
+3. Give the user a small reading list.
+4. Ask the user to explain the code or concept in their own words.
+5. Ask the user to map the new concept back to the old anchors.
+6. Point out what is accurate, inaccurate, missing, or shallow.
+7. Ask the user to restate the corrected understanding.
+8. If the user lacks the syntax pattern, show one minimal correct example plus the logic checklist first, then ask the user to rewrite it from memory instead of copying.
+9. Guide the user through writing a small related demo, one step at a time.
+10. When the user writes something wrong, ask why they wrote it that way.
+11. Correct the mental model.
+12. Ask the user to rewrite only the wrong part.
+13. Move forward only after the user can explain, connect, and rebuild the current step.
 
 ## Rules
 
@@ -39,6 +43,8 @@ For each topic, follow this loop:
 - Keep tasks small: one file, one method, or one flow at a time.
 - If the user is confused, reduce scope instead of giving a long lecture.
 - Do not modify project code unless the user explicitly asks for implementation.
+- Do not teach new knowledge as an isolated concept. Always connect it to a known backend, AI Agent, project, or programming concept.
+- If an old knowledge anchor is weak, name it as a prerequisite gap and repair that gap before continuing.
 - When the user asks for the correct syntax or says they do not know the standard shape, give one small reference example before asking them to write. Explain the logic checklist, then have them close the example and rewrite it.
 
 ## Real Data, Logic-First Mode
@@ -61,6 +67,7 @@ Start with diagnostic questions that reveal:
 - what the core flow is
 - what can fail or be misunderstood
 - how it connects to the user's own project
+- which old knowledge it should reinforce
 
 Example for Redis:
 
@@ -69,8 +76,43 @@ Example for Redis:
 3. How does the Java backend connect to Redis?
 4. Why can product-detail cache not replace MySQL?
 5. If Redis is unavailable, should the business fail immediately or fall back to MySQL?
+6. Which old knowledge does Redis connect to for you: MySQL query flow, Service layer, DTO/VO, transactions, or interface performance?
 
 After the user answers, name the weak spots before teaching.
+
+## Old Knowledge Connection Phase
+
+Before teaching a new topic, ask the user to connect it to what they already know.
+
+Use 3-5 focused questions:
+
+1. Which old backend, AI Agent, project, or programming concept does this remind you of?
+2. What problem would the old approach solve without this new topic?
+3. What extra problem does the new topic solve?
+4. Which layer or flow does it touch: Controller, Service, Mapper, database, cache, auth, transaction, queue, retriever, state, or tool calling?
+5. What could be confused between the old concept and the new concept?
+
+Then create or ask the user to create this mapping:
+
+```text
+New concept:
+Old anchor:
+Same:
+Different:
+Project location:
+Likely confusion:
+```
+
+Example for Redis:
+
+```text
+New concept: Redis cache-aside
+Old anchor: MySQL query through Service and Mapper
+Same: Both can return product data to the business flow
+Different: MySQL is the source of truth; Redis is an acceleration layer
+Project location: business service read path and update path
+Likely confusion: treating cached data as authoritative data
+```
 
 ## Reading Phase
 
@@ -99,7 +141,9 @@ Ask the user to explain with this structure:
 4. What happens when Redis does not have the data?
 5. Which system is the source of truth: MySQL or Redis?
 6. Why delete cache after updating data?
-7. What are the likely pitfalls?
+7. Which old knowledge does this reinforce?
+8. If we did not use Redis, how would the old MySQL-only flow work?
+9. What are the likely pitfalls?
 ```
 
 Use this feedback format:
@@ -163,6 +207,7 @@ A step is complete only when the user can do all three:
 
 - explain the code in their own words
 - identify the key pitfall
+- connect the new concept to at least one old knowledge anchor
 - write a small similar version without copying the project code
 
 For Redis cache-aside, the minimum correct restatement is:
@@ -174,6 +219,7 @@ If the key is missing, query MySQL.
 After MySQL returns data, write it to Redis with a TTL.
 When data changes, update MySQL first, then delete the Redis cache.
 MySQL is the source of truth; Redis is only an acceleration layer.
+This reinforces the old Service-to-Mapper-to-MySQL read flow by adding a faster read path before MySQL.
 ```
 
 ## Common Mistakes
@@ -184,6 +230,8 @@ MySQL is the source of truth; Redis is only an acceleration layer.
 - Updating MySQL but forgetting to delete cache.
 - Jumping into full project integration before building a small demo.
 - Continuing before the user can restate the current step correctly.
+- Learning Redis, JWT, MQ, RAG, or LangGraph as isolated tools instead of connecting them to an existing request flow, data flow, or state flow.
+- Saying "I understand" without being able to name the old knowledge that the new topic strengthens or corrects.
 
 ## Output Style
 
