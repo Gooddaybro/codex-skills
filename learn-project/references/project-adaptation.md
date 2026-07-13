@@ -38,6 +38,14 @@ Within the selected repository, read instructions in this order:
 
 When instructions conflict, the closest applicable project instruction governs its scope.
 
+Before selecting or finalizing any branch or learning path:
+
+1. List the applicable instruction files actually read, or state that none were found.
+2. Summarize the relevant constraints and their effect on the branch or path choice.
+3. Only then apply the branch and learning-location priorities below.
+
+Branch or path selection cannot be finalized from prompt facts alone until this instruction check is recorded.
+
 ## Git Decision and Dirty Guard
 
 Choose a learning branch by priority:
@@ -88,6 +96,7 @@ Use a deterministic stand-in only when a dependency is nondeterministic or distr
 Before creating or changing any project file, show all of these fields:
 
 - **Repository:** selected root
+- **Instructions read and effect:** applicable instruction files actually read (or none found), relevant constraints, and their effect on branch and path selection
 - **Branch/action:** current branch and any proposed Git action
 - **Path:** exact demo or learning location
 - **Run/verify command:** smallest expected command
