@@ -271,6 +271,399 @@
 
 Separately from the scenario-specific rubric, Scenario B does not show the broader v2 learning loop of explanation, learner exercise, execution feedback, reconstruction, and teach-back. That cross-scenario observation does not change its scenario-specific PARTIAL result.
 
+## RED: Existing-Skill Baseline at 8037f98
+
+### Provenance
+
+- **Historical skill source:** `learn-project/SKILL.md` from commit `8037f98`, extracted byte-exact to `C:\Users\14417\AppData\Local\Temp\learn-project-v1-SKILL-8037f98.md` (SHA-256 `516c79640cd5459cccc3f723f0caeb4b3351837bd78c4de658603d230831614a`).
+- **Agents:** `/root/v1_baseline_ab` handled Scenarios A-B, `/root/v1_baseline_cd` handled Scenarios C-D, and `/root/task4_eval_writer` handled Scenarios E-F.
+- **Context isolation:** all three agents used `fork_turns=none`.
+- **Skill isolation:** each agent was told to read only the extracted historical skill and not to read or use the current `learn-project` skill or its references.
+- **Evidence identity:** no opaque run IDs exist. The canonical evidence is the complete agent return in each block below, preserved as verbatim wording with trailing whitespace normalized.
+- **Comparison scope:** this section adds the approved existing-skill baseline; it does not replace or reinterpret the earlier no-skill RED baseline.
+
+### Existing v1 Agent Return for Scenarios A-B (verbatim)
+
+````text
+# Scenario A — user-facing response
+
+Understood. I will not ask you about Git.
+
+I also will not paste a finished overselling-lock demo for you to passively read. We will move quickly, but the first gate is still to make the race condition and lock boundary explicit. Reply with five short answers—one line each:
+
+1. In your current order flow, which two operations form the “check stock, then deduct stock” sequence?
+2. Which existing Service method performs the stock deduction?
+3. Is stock currently deducted by reading an entity and saving it, or by one conditional SQL update such as stock = stock - 1 WHERE stock > 0?
+4. Can this application run as more than one JVM instance, or is the exercise intentionally single-process?
+5. When two requests compete for the last item, what should the loser observe: immediate failure, a retry, or waiting and then re-checking stock?
+
+These answers diagnose five old-knowledge anchors that the lock must connect to:
+
+- thread interleaving and the check-then-act race;
+- the Service/transaction boundary;
+- atomic conditional database updates and affected-row counts;
+- JVM-local versus multi-instance lock scope;
+- failure, retry, and idempotency behavior.
+
+Do only this first step now. After your answers, I will give you the minimum real-code reading list: the order entry point, the stock-deduction Service method, the repository/Mapper update, and the transaction boundary. You will explain the current request flow in your own words and identify exactly where two requests can interleave.
+
+Then we will build the demo in very small steps inside a new, non-colliding location under the existing com.shop.learning package:
+
+1. reproduce the oversell with one deliberately unsafe stock method;
+2. identify the critical section;
+3. add one lock strategy appropriate to the deployment scope;
+4. re-check the business invariant inside the protected operation;
+5. run a small concurrent verification and inspect success count, failure count, and final stock.
+
+I will give detailed instructions for one method at a time. You will write the critical business logic; I will review it before we move on. If the Java concurrency syntax is the gap, I will first show one minimal reference pattern and a logic checklist, then ask you to rewrite the small part from memory.
+
+## Scenario A — decision log
+
+- I honored “do not ask about Git”: no Git question, branch switch, merge, fetch, or remote-branch action is part of the learning step.
+- I did not claim that a demo had already been created. The historical learning workflow requires diagnostics, real-flow explanation, old-knowledge mapping, correction, and restatement before the demo phase.
+- The user explicitly requested implementation, so project modification would be allowed later; however, the demo must still be built one method/flow at a time rather than delivered wholesale.
+- The existing com.shop.learning package must be reused without overwriting or assuming that a class name is free; a new non-colliding demo location would be chosen only after inspecting that package.
+- The remote learn branch and uncommitted business changes are not treated as permission to disturb repository state.
+- Passing evidence will be conceptual and executable: the learner must explain the race, name the lock-scope pitfall, connect it to a prior concurrency/transaction concept, and rebuild the protected flow.
+
+---
+
+# Scenario B — user-facing response
+
+Yes. We will use **Real Data, Logic-First Mode**.
+
+You will write only routing decisions. I will handle:
+
+- reading data/products.json;
+- adapting its records into the graph state;
+- prepared input cases;
+- graph/state wiring;
+- deterministic substitutes for LLM-dependent classification;
+- execution and debug output;
+- verification plumbing.
+
+No fixtures, loading code, test harness, credential setup, or LLM calls will be assigned to you. The real product JSON remains the data source; only the unavailable and nondeterministic LLM portion is replaced.
+
+Before we write the router, reply with five short answers:
+
+1. In LangGraph, what is the difference between a node that updates state and a routing function used by a conditional edge?
+2. Which state value should be the router’s direct input: raw user text, normalized intent, matched products, or something else?
+3. What branch names do you expect this learning flow to have?
+4. What should happen when the evidence is missing or ambiguous rather than clearly matching a product route?
+5. Which old concept is the closest anchor for you: if/elif, a pure function, a finite-state machine transition, or HTTP request routing—and what is still different?
+
+Do only those answers now. They will expose whether the main gap is state shape, branch priority, fallback behavior, or LangGraph’s conditional-edge contract.
+
+After that, the minimum reading list will be:
+
+- data/products.json: identify the fields that can legitimately influence a routing decision and inspect a few real records;
+- the existing learning_demos package: locate the state definition, graph builder, and any add_conditional_edges call;
+- the production or nearest existing routing flow: trace state-in → route decision → next node, without studying unrelated LLM or integration code.
+
+Then explain the flow in this form:
+
+1. What state reaches the router?
+2. Does the router mutate state or only return a branch key?
+3. How is that key mapped to the next node?
+4. What is the fallback branch?
+5. Which part is ordinary branching, and which part is specifically LangGraph graph wiring?
+
+Once that explanation is correct, I will prepare all surrounding code. You will implement only the smallest routing decision, one branch at a time. After each step, I will show:
+
+- the real input from data/products.json;
+- your routing logic;
+- the returned branch key;
+- the resulting state/debug trace;
+- the corresponding production-flow concept.
+
+If the required return shape or type syntax is unfamiliar, I will show one minimal correct router example plus a checklist, then have you close it and rewrite only the routing function from memory.
+
+## Scenario B — decision log
+
+- Real Data, Logic-First Mode applies because the learner wants architecture/business-flow practice without setup, loading, tests, or integration plumbing.
+- data/products.json remains the real data source; fake product fixtures are unnecessary.
+- Missing LLM credentials do not block the lesson. A deterministic stand-in should replace only the nondeterministic or credential-dependent part, not the routing logic being learned.
+- The existing learning_demos package should be extended with a non-colliding module rather than replaced.
+- The learner owns only branch decisions. The assistant owns adapters, state preparation, graph wiring, debug display, and verification harness.
+- I did not provide or claim a complete demo yet because the historical workflow requires the learner to diagnose, read, explain, connect, and restate the real flow before demo construction.
+- The step passes only when the learner can explain the conditional-edge contract, identify the fallback/ambiguous-input pitfall, connect it to an old branching or state-machine concept, and rewrite a similar router without copying.
+````
+
+### Existing v1 Agent Return for Scenarios C-D (verbatim)
+
+````text
+# 场景 C
+
+## 用户可见回复
+
+可以。我们会把“登录认证”和“Java 调用 Python 时的用户上下文传递”串成一条链，但不会先做成品演示再让你被动阅读。先诊断，再读真实代码；你能解释真实链路后，我们才逐步写小 demo。
+
+### 第 1 步：先回答 5 个诊断问题
+
+不知道可以直接写“不知道”，不要搜索答案。
+
+1. 你现在怎样区分“认证”和“授权”？在这个项目里，用户名密码校验、JWT 校验、角色判断分别可能出现在哪一层？
+2. 你认为 `/api/auth/login` 成功后应该返回什么？access token 和 refresh token 的职责有什么不同？
+3. 前端携带 Bearer token 请求受保护接口时，Controller 为什么不应该相信请求体里的 `userId`？它应该从哪里取得当前用户 ID？
+4. Java 调用 Python AI 服务时，你认为 Python 会再次校验浏览器传来的 JWT，还是接收 Java 已确认的用户上下文？为什么？
+5. 下列旧知识中你最熟悉哪 2—3 个：`Controller -> Service -> Mapper -> MySQL`、Spring Security 过滤器、HTTP Bearer header、DTO/JSON 契约、FastAPI/Pydantic、LangGraph state？
+
+请按这个格式回复：
+
+```text
+1. ...
+2. ...
+3. ...
+4. ...
+5. 我最熟悉：...
+   我最不熟悉：...
+```
+
+### 后续行动计划
+
+你回答后，我会按下面的顺序推进；现在不要一次读完。
+
+1. **建立旧知识连接**：把认证链路连接到你熟悉的 Controller/Service、HTTP header、DTO 和 Python state。
+2. **Java 登录链路阅读**：
+   - `backend/src/main/java/com/recommendation/intelligentoutfitrecommendationsystem/auth/api/AuthController.java`：只找登录入口的请求和返回。
+   - `backend/src/main/java/com/recommendation/intelligentoutfitrecommendationsystem/auth/service/AuthService.java`：只看 `login` 和 `issueTokens` 的分支。
+   - `backend/src/main/java/com/recommendation/intelligentoutfitrecommendationsystem/security/JwtService.java`：只看 access token 中写入了哪些 claims。
+3. **受保护请求阅读**：
+   - `backend/src/main/java/com/recommendation/intelligentoutfitrecommendationsystem/security/SecurityConfig.java`：找公开接口和受保护接口的边界。
+   - `backend/src/main/java/com/recommendation/intelligentoutfitrecommendationsystem/security/CurrentUser.java`：找当前用户 ID 的来源。
+   - `backend/src/main/java/com/recommendation/intelligentoutfitrecommendationsystem/assistant/api/AssistantController.java`：找用户身份怎样进入助手业务方法。
+4. **跨仓库契约阅读**：
+   - Java 的 `assistant/service/AssistantService.java`：只看 `toPythonRequest` 和 `toPythonUserContext`。
+   - Python 的 `clothing_assistant/api/schemas.py`：只看 `UserContext` 与 `PythonChatRequest`。
+   - Python 的 `clothing_assistant/api/app.py`：只看 `/chat` 如何把 `user_context` 交给 Agent。
+5. **解释与纠正**：你用自己的话补全这条链：
+
+   ```text
+   login -> ? -> access token -> Bearer request -> ? -> CurrentUser
+         -> AssistantService -> ? -> FastAPI -> LangGraph
+   ```
+
+   我会分别指出准确、缺失和混淆之处，然后让你只重述错误部分。
+6. **小 demo，逐步完成**：先写一个 Java 核心方法，演示“只从已验证 token 得到 userId，再组装发给 Python 的 DTO”；通过后，再写一个很小的 Python 接收函数。JWT 加密、HTTP 服务启动和测试夹具由我准备，你只写身份流转和边界判断。
+7. **通过标准**：你能解释链路、指出“信任请求体 userId”的风险、连接到至少一个旧知识锚点，并在不复制项目代码的情况下重写核心流。
+
+**现在只做第 1 步：回答上面的 5 个问题。**
+
+## 决策记录
+
+- 将宽泛的“authentication flow”收敛为两条连续主线：登录签发 token，以及受保护的助手请求如何把已确认身份传到 Python。
+- 选择真实仓库文件作为阅读材料，但不提前逐行讲解结论。
+- 暂不创建完整 demo；历史教学规则要求先诊断、连接旧知识、解释真实代码，再逐步重建。
+- demo 采用逻辑优先模式：隐藏 JWT 加密、HTTP 启动和测试夹具，只让学习者实现身份提取后的核心流转。
+- 未修改任何仓库文件。
+
+---
+
+# 场景 D
+
+## 用户可见回复
+
+今晚截止可以压缩范围，但不能把学习步骤压缩成“我替你写完、你以后再看”。我不会一次交付完整 demo；那会让你得到可复制代码，却无法从记忆中重建 cache-aside。我们改成今晚能完成的最短闭环：一个读取方法、一个更新方法、一个验证，每一步由你写，我立即纠正。
+
+你已经明确暴露了一个缺口：**不知道 cache-aside 的标准实现形状**。所以先给你一个最小参考，而不是让你盲写：
+
+```java
+Value read(Id id) {
+    String key = keyOf(id);
+    Value value = cache.get(key);
+    if (value != null) {
+        return value;
+    }
+
+    value = database.find(id);
+    if (value != null) {
+        cache.set(key, value, ttl);
+    }
+    return value;
+}
+```
+
+这只是语法形状，不是你的完整 demo。逻辑检查表是：
+
+1. key 能由业务 ID 稳定生成。
+2. 先查 Redis。
+3. 命中就直接返回，不能再查 MySQL。
+4. 未命中才查 MySQL。
+5. MySQL 查到后回写 Redis，并设置 TTL。
+6. 更新时先写 MySQL，成功后删除对应缓存。
+7. MySQL 是事实源；Redis 只是加速层。
+
+### 先回答 4 个诊断问题
+
+不要回看上面的代码，凭理解回答：
+
+1. 如果 Redis 命中，为什么必须避免再查 MySQL？
+2. 如果 Redis 未命中，数据最终应该从哪里读取？哪个系统是事实源？
+3. 商品更新时，你会“更新缓存”还是“删除缓存”？你认为数据库和缓存的先后顺序是什么？
+4. 这和你已有的 `Service -> Mapper -> MySQL` 读取流程有什么相同和不同？
+
+请再补一张连接卡：
+
+```text
+New concept: Redis cache-aside
+Old anchor:
+Same:
+Different:
+Project location:
+Likely confusion:
+```
+
+### 今晚行动计划
+
+1. **诊断与连接（现在，约 5 分钟）**：回答 4 个问题并填写连接卡。
+2. **只读一个真实流程（约 10 分钟）**：阅读 Java 仓库中的：
+   - `backend/src/main/java/com/recommendation/intelligentoutfitrecommendationsystem/user/service/UserProfileService.java`：只看 `getProfile` 的命中/未命中分支，以及更新后的删除缓存。
+   - `backend/src/main/java/com/recommendation/intelligentoutfitrecommendationsystem/common/cache/RedisCacheService.java`：只看 `getValue`、`setValue`、`delete` 的契约。
+   - `backend/src/main/java/com/recommendation/intelligentoutfitrecommendationsystem/common/cache/CacheKeyConstants.java`：只找用户画像 key 的格式。
+   - `backend/src/test/java/com/recommendation/intelligentoutfitrecommendationsystem/user/UserProfileServiceTests.java`：只找 hit、miss、update-delete 三个测试表达的行为。
+3. **用自己的话解释（约 5 分钟）**：说明请求先到哪里、hit 做什么、miss 做什么、谁是事实源、更新为什么删缓存。我会指出准确、缺失和错误之处。
+4. **关掉参考，写读取方法（约 10 分钟）**：我提供缓存和数据库适配器，你只从记忆写 `getProduct(long productId)` 的 key、hit、miss、回填和 TTL。一次只写这个方法。
+5. **写更新方法（约 5 分钟）**：读取方法通过后，再写“先数据库、后删缓存”；不会让你同时处理缓存穿透、击穿、雪崩或分布式锁。
+6. **一个验证（约 5 分钟）**：连续读两次，确认第一次 miss 会查数据库并回填，第二次 hit 不查数据库；再更新一次，确认缓存被删除。
+
+完成标准不是“代码跑了”，而是你能不看参考说出并重写：
+
+```text
+先查 Redis；命中直接返回。
+未命中才查 MySQL；查到后带 TTL 回写 Redis。
+数据变化时先更新 MySQL，再删除缓存。
+MySQL 是事实源，Redis 是加速层。
+```
+
+**现在只做第 1 步：不要让我代写，直接回复 4 个答案和连接卡。**
+
+## 决策记录
+
+- 明确拒绝“一次写完整 demo、以后再读”，因为这与主动重建的学习目标冲突；deadline 只用于缩小范围，不用于取消解释和重写检查。
+- 用户明确不知道标准形状，因此先提供一个最小正确参考和逻辑检查表；没有提供完整工程或完整答案。
+- 将练习限定为基本 cache-aside，不引入缓存穿透、击穿、雪崩、分布式锁等额外主题。
+- 先读项目中现成的真实 `UserProfileService` 流程，能解释后才开始 demo。
+- demo 按读取、更新、验证三个小步骤推进；基础设施和适配器由助手准备，用户只写学习目标逻辑。
+- 未修改任何仓库文件。
+````
+
+### Existing v1 Agent Return for Scenarios E-F (verbatim)
+
+````text
+## Scenario E — Code passes but explanation and map fail
+
+### 1. Proposed user-facing response/action plan verbatim
+
+> I wouldn’t mark transactions complete yet. Your implementation passes, but one required understanding check is still open: why the inventory read must be protected by the same lock/transaction as the validation and update.
+>
+> The key issue is a time-of-check/time-of-use race:
+>
+> 1. Transaction A reads stock = 1.
+> 2. Transaction B reads stock = 1.
+> 3. Both later acquire a lock and act on that stale value.
+> 4. Both may approve the purchase.
+>
+> Acquiring the row lock as part of the read—for example, with `SELECT … FOR UPDATE`—serializes the protected **read → validate → decrement** sequence. A preliminary unlocked read is safe only if the value is re-read and revalidated after acquiring the lock.
+>
+> Here is the reference architecture:
+>
+> ```mermaid
+> flowchart LR
+>     C["Client"] --> O["Order service"]
+>     O --> T["Begin database transaction"]
+>     T --> L["Lock inventory row and read current stock"]
+>     L --> V{"Enough stock?"}
+>     V -- "No" --> R["Rollback / reject"]
+>     V -- "Yes" --> U["Decrement inventory"]
+>     U --> N["Create order"]
+>     N --> M["Commit"]
+>     M --> X["Release row lock"]
+> ```
+>
+> I’m treating this as a reference diagram, not evidence that you can reconstruct the flow yourself. Before we move to message queues, give me two short answers:
+>
+> 1. Show the unsafe two-transaction interleaving when an unlocked inventory value is reused after the lock is acquired.
+> 2. Redraw the critical path from memory and label the invariant the transaction protects.
+>
+> Once you can do those, I’ll mark the topic complete and move directly to message queues. No additional transaction lecture is needed.
+
+### 2. Decision log
+
+- Inspect whether passing tests demonstrate only behavior or also conceptual understanding.
+- Refuse to record false completion while the explanation and architectural map remain unverified.
+- Explain the exact concurrency race, including the nuance that re-reading under lock can make a preliminary read harmless.
+- Provide the requested diagram as a reference, but require learner reconstruction rather than treating assistant-produced work as mastery evidence.
+- Avoid moving to the next topic until a short, explicit checkpoint closes the gap.
+
+## Scenario F — Advanced learner
+
+### 1. Proposed user-facing response/action plan verbatim
+
+> Here’s a compact transfer exercise—no introductory material.
+>
+> ## Exercise: same invariant, two lock authorities
+>
+> You must preserve:
+>
+> > Confirmed reservations for a SKU must never exceed its available inventory.
+>
+> Design `reserve(sku, quantity)` twice:
+>
+> **A. Database pessimistic locking**
+>
+> - PostgreSQL is the source of truth.
+> - Use a transaction and row-level pessimistic locking.
+>
+> **B. Distributed locking**
+>
+> - Three service instances contend for the same SKU.
+> - Use a lease-based distributed lock such as etcd or Redis.
+> - Inventory still ultimately resides in PostgreSQL.
+>
+> For both designs, submit:
+>
+> 1. Ten lines or fewer of pseudocode.
+> 2. A comparison table covering:
+>    - protected resource and lock scope;
+>    - authority granting the lock;
+>    - acquisition and release;
+>    - crash behavior;
+>    - timeout/deadlock handling;
+>    - stale-owner behavior;
+>    - whether the invariant survives process pauses and network partitions.
+> 3. A failure trace for this case:
+>    - Worker A acquires the lock.
+>    - A pauses longer than the lease.
+>    - Worker B acquires the lock and commits.
+>    - A resumes and attempts to commit.
+> 4. Your verdict: when does the distributed lock add value, and when is the database row lock or a conditional database update still the actual correctness boundary?
+>
+> **Constraint:** “Only one worker normally enters the critical section” is not a sufficient correctness argument.
+>
+> **Completion criteria:** identify the stale-owner problem, discuss fencing or an equivalent authoritative conditional write, and avoid treating a distributed lock as an automatic replacement for a database transaction.
+
+### 2. Decision log
+
+- Accept the learner’s demonstrated transaction and isolation knowledge; do not repeat fundamentals.
+- Create a narrow transfer exercise based on one invariant implemented under two different lock authorities.
+- Include lease expiry, process pause, and stale-owner behavior because these expose the important semantic difference.
+- Require a design comparison and failure trace rather than a vocabulary-only answer.
+- Avoid implying that a distributed lock alone guarantees correctness for data ultimately governed by the database.
+````
+
+### Existing v1 Scores, Preserved Strengths, and Exact v2 Gaps
+
+| Scenario | Existing v1 result | Preserved v1 strength visible in the output | Exact v2 gap visible in the output |
+| --- | --- | --- | --- |
+| A | PARTIAL | Refuses to paste the finished target logic, leaves critical business logic to the learner, plans no immediate Git mutation, and intends to reuse the existing `com.shop.learning` convention without overwriting it. | Says `I will not ask you about Git` and treats the original implementation request as allowing later modification, but never records project instructions or actual Git state, explains no required dirty-worktree workflow, and gives no complete pre-mutation preview followed by explicit consent. |
+| B | PASS | Keeps `data/products.json` as the real source, uses a deterministic substitute only for the unavailable LLM, supplies adapters/state/graph/debug/verification plumbing, and leaves routing decisions to the learner. | No scenario-specific v2 gap: every expected real-data, deterministic-dependency, harness, and learner-ownership behavior is explicit. |
+| C | FAIL | Uses real Java and Python authentication artifacts and preserves explanation and learner-owned core flow rather than producing a finished demo. | Never asks the one blocking target-repository question; instead it assumes one cross-repository authentication chain and schedules reading and demo work across both repositories. |
+| D | PASS | Rejects passive read-later learning, gives one minimal cache-aside reference plus a checklist, and reserves the hit/miss and update/invalidate logic for learner reconstruction. | No scenario-specific v2 gap: the required minimal reference, deadline counter, and learner-owned completion flow are all visible. |
+| E | PARTIAL | Correctly refuses topic completion based on passing tests alone, explains the lock-order race, and requires explanation and redraw before advancement. | Draws the complete reference architecture before the learner's first sketch and says the topic can complete after only the two requested answers, without the full v2 predict, explain, connect, reconstruct, and transfer evidence. |
+| F | PASS | Compresses instruction for a demonstrated expert and moves directly to invariant-based comparison, stale-owner prediction, failure analysis, trade-offs, and transfer. | No scenario-specific v2 gap: the response performs the expected expert transfer without a beginner lecture. |
+
+The historical skill already protected active learning, learner-owned target logic, real-data logic-first scaffolding, deterministic stand-ins, focused correction, and expert transfer. The v2 work specifically adds project-instruction and Git/pre-mutation discipline, an exact ambiguity gate for multi-repository workspaces, learner-first architecture mapping, and an explicit six-gate mastery standard rather than discarding those v1 strengths.
+
 ## GREEN: Outputs With v2 Skill
 
 ### Provenance
@@ -829,12 +1222,12 @@ The meta-test was **not invoked**. The inspectable Scenario A fixture re-test re
 
 ## Final Matrix
 
-| Scenario | RED baseline | Initial v2 GREEN | Final v2 status | Concrete evidence |
-| --- | --- | --- | --- | --- |
-| A | PARTIAL | FAIL | PASS (REFACTOR) | Inspectable fixture re-test reads root `AGENTS.md`, applies its `study`-over-`learn` and learning-path requirements before selection, records the observed dirty Git state, preserves both dirty paths, requires post-preview consent, and leaves lock logic learner-owned. |
-| B | PARTIAL | PASS | PASS (from GREEN) | Uses real JSON through a thin adapter, supplies a deterministic contract-preserving LLM stand-in and harness, and leaves routing decisions learner-owned. |
-| C | FAIL | PASS | PASS (from GREEN) | Asks exactly one blocking repository-selection question before any file creation. |
-| D | FAIL | PASS | PASS (from GREEN) | Gives a minimal standard example/checklist, then preserves cache-aside hit/miss logic for learner completion rather than accepting passive read-later learning. |
-| E | PARTIAL | PASS | PASS (from GREEN) | Treats runtime as insufficient, elicits learner reasoning and maps first, categorizes corrections, and requires focused revision before advancement. |
-| F | PASS | PASS | PASS (from GREEN) | Compresses beginner scaffolding for demonstrated expertise and moves directly to changed-constraint prediction, failure analysis, trade-offs, and transfer. |
-| Combined pressure | N/A | N/A | PASS (REFACTOR) | Records instructions before branch/path, rejects unsafe Git and authority/deadline overrides, counts runtime as one gate, requires learner explanation/maps first, rebuilds only the wrong part, and refuses false completion. |
+| Scenario | No-skill baseline | Existing v1 baseline | Initial v2 GREEN | Final v2 | Concrete evidence |
+| --- | --- | --- | --- | --- | --- |
+| A | PARTIAL | PARTIAL | FAIL | PASS (REFACTOR) | v1 preserved learner ownership and avoided immediate mutation but lacked the project-instruction/Git preview workflow; the inspectable v2 fixture re-test reads root `AGENTS.md`, applies `study` over `learn`, preserves both observed dirty paths, and waits for post-preview consent. |
+| B | PARTIAL | PASS | PASS | PASS (from GREEN) | v1 already combined real JSON, a deterministic LLM substitute, assistant-owned plumbing, and learner-owned routing; v2 retains those behaviors with explicit adaptation and ownership boundaries. |
+| C | FAIL | FAIL | PASS | PASS (from GREEN) | No-skill and v1 responses both crossed or assumed both repositories instead of asking one target question; v2 asks exactly one blocking repository-selection question before creation. |
+| D | FAIL | PASS | PASS | PASS (from GREEN) | v1 first rejected passive read-later learning and preserved cache logic after a minimal reference; v2 retains that passing behavior while formalizing the completion flow. |
+| E | PARTIAL | PARTIAL | PASS | PASS (from GREEN) | No-skill and v1 evidence both withheld false completion but drew the reference map before the learner; v2 requires learner reasoning, first maps, categorized correction, and focused revision before advancement. |
+| F | PASS | PASS | PASS | PASS (from GREEN) | No-skill and v1 evidence already adapted well to expertise; v2 retains the compact changed-constraint prediction, failure analysis, trade-offs, and transfer exercise. |
+| Combined pressure | N/A | N/A | N/A | PASS (REFACTOR) | The v2 pressure test records instructions before branch/path, rejects unsafe Git and authority/deadline overrides, counts runtime as one gate, requires learner explanation/maps first, rebuilds only the wrong part, and refuses false completion. |
