@@ -1,6 +1,6 @@
 # Codex Skills
 
-This repository stores reusable personal Codex skills. The GitHub repository is the source of truth; installed Codex skill directories are synchronized copies.
+This repository stores reusable personal Codex skills and is the source of truth. The macOS installation below links Codex directly to the checkout, while this Windows setup uses an exact synchronized directory copy.
 
 ## learn-project
 
@@ -28,7 +28,13 @@ mkdir -p ~/.codex/skills
 ln -s ~/codex-skills/learn-project ~/.codex/skills/learn-project
 ```
 
-Restart Codex after installing.
+For later source updates:
+
+```bash
+git -C ~/codex-skills pull --ff-only
+```
+
+The symlink already points to the checkout, so no separate copy or synchronization step is needed. Restart Codex after installing or updating.
 
 ## Install or Synchronize on Windows
 

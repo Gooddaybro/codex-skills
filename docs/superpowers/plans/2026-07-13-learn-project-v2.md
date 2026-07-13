@@ -1,5 +1,7 @@
 # Learn Project v2 Implementation Plan
 
+**Execution status:** Tasks 1–5 are complete. Task 6 final review, verification, and GitHub push are in progress.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Refactor the existing `learn-project` skill into a project-aware learning coach that adapts to Java, Python, and multi-repository workspaces while enforcing worked examples, learner-owned demos, self-explanation, architecture mapping, reconstruction, and transfer.
@@ -27,7 +29,9 @@ The approved design explicitly selects `D:\git\codex-skills` `main` as the imple
 **Files:**
 - Create: `docs/superpowers/evals/2026-07-13-learn-project-v2-evaluation.md`
 
-- [ ] **Step 1: Verify the starting repository state**
+> **Execution note:** Final spec review also required an existing-skill baseline in addition to the no-skill baseline. The [evaluation report](../evals/2026-07-13-learn-project-v2-evaluation.md#red-existing-skill-baseline-at-8037f98) captures the skill byte-exact at commit `8037f98`.
+
+- [x] **Step 1: Verify the starting repository state**
 
 Run:
 
@@ -38,7 +42,7 @@ git -C D:\git\codex-skills log -2 --oneline --decorate
 
 Expected: `main` is ahead of `origin/main` only by the approved design and implementation-plan commits; no unrelated working-tree changes exist.
 
-- [ ] **Step 2: Dispatch three context-isolated baseline agents**
+- [x] **Step 2: Dispatch three context-isolated baseline agents**
 
 Use `fork_turns="none"`. Explicitly tell each agent not to read or use `learn-project`; give each agent two scenarios and require the full proposed response plus a short decision log.
 
@@ -90,7 +94,7 @@ The learner already implements transactions correctly and can explain isolation 
 
 Expected v2 behavior: compress the worked example to a standard-shape/constraint check, then move directly to prediction, trade-offs, and transfer.
 
-- [ ] **Step 3: Write the baseline report verbatim**
+- [x] **Step 3: Write the baseline report verbatim**
 
 Create the evaluation document with these sections:
 
@@ -124,7 +128,7 @@ Repeat the same complete-response format for Scenarios B-F.
 
 Do not invent a failure where baseline behavior was already correct. Record both passes and failures and identify only observed gaps.
 
-- [ ] **Step 4: Verify the RED evidence**
+- [x] **Step 4: Verify the RED evidence**
 
 Run an evaluation-document check that confirms all six scenario headings and at least one verbatim baseline output are present:
 
@@ -135,7 +139,7 @@ python -c "from pathlib import Path; p=Path(r'D:\git\codex-skills\docs\superpowe
 
 Expected: `baseline evaluation structure: PASS`.
 
-- [ ] **Step 5: Commit the RED evidence**
+- [x] **Step 5: Commit the RED evidence**
 
 ```powershell
 git -C D:\git\codex-skills add docs/superpowers/evals/2026-07-13-learn-project-v2-evaluation.md
@@ -152,7 +156,7 @@ git -C D:\git\codex-skills commit -m "Test learn-project v2 baseline behavior"
 - Modify: `learn-project/agents/openai.yaml`
 - Modify: `README.md`
 
-- [ ] **Step 1: Rewrite `SKILL.md` as the mandatory core workflow**
+- [x] **Step 1: Rewrite `SKILL.md` as the mandatory core workflow**
 
 Use this section order and behavior:
 
@@ -190,7 +194,7 @@ Add explicit counters for the observed baseline rationalizations. The non-negoti
 - a dirty worktree is not permission to switch, stash, or overwrite;
 - scaffolding must shrink when the learner demonstrates mastery.
 
-- [ ] **Step 2: Add `references/project-adaptation.md`**
+- [x] **Step 2: Add `references/project-adaptation.md`**
 
 Include:
 
@@ -203,7 +207,7 @@ Include:
 - a pre-mutation preview containing repository, branch, path, run command, assistant-owned files, and learner-owned logic;
 - the rule that the profile remains in context rather than creating a speculative config file.
 
-- [ ] **Step 3: Add `references/learning-artifacts.md`**
+- [x] **Step 3: Add `references/learning-artifacts.md`**
 
 Include reusable templates for:
 
@@ -219,7 +223,7 @@ Include reusable templates for:
 - six-gate assessment;
 - a review card that stays in conversation unless the user approves persistence.
 
-- [ ] **Step 4: Regenerate `agents/openai.yaml`**
+- [x] **Step 4: Regenerate `agents/openai.yaml`**
 
 Run the official generator:
 
@@ -233,11 +237,11 @@ python C:\Users\14417\.codex\skills\.system\skill-creator\scripts\generate_opena
 
 Expected: `agents/openai.yaml` uses quoted strings and the default prompt explicitly mentions `$learn-project`.
 
-- [ ] **Step 5: Update the repository README**
+- [x] **Step 5: Update the repository README**
 
-Describe the v2 loop: project adaptation, worked example, learner-owned core logic, reconstruction, learner-first architecture mapping, transfer, and six-gate completion. State that the repository is the source of truth and the current Windows machine uses a synchronized copy unless the user later replaces it with a junction.
+Describe the v2 loop: project adaptation, worked example, learner-owned core logic, reconstruction, learner-first architecture mapping, transfer, and six-gate completion. State that the repository is the source of truth and Windows uses a synchronized copy for this implementation; no junction is supported by this update procedure.
 
-- [ ] **Step 6: Run static checks before behavior tests**
+- [x] **Step 6: Run static checks before behavior tests**
 
 ```powershell
 python C:\Users\14417\.codex\skills\.system\skill-creator\scripts\quick_validate.py D:\git\codex-skills\learn-project
@@ -246,7 +250,7 @@ git -C D:\git\codex-skills diff --check
 
 Expected: skill validation succeeds and `git diff --check` emits no errors.
 
-- [ ] **Step 7: Commit the minimal GREEN implementation**
+- [x] **Step 7: Commit the minimal GREEN implementation**
 
 ```powershell
 git -C D:\git\codex-skills add learn-project README.md
@@ -258,7 +262,7 @@ git -C D:\git\codex-skills commit -m "Refactor learn-project as adaptive learnin
 **Files:**
 - Modify: `docs/superpowers/evals/2026-07-13-learn-project-v2-evaluation.md`
 
-- [ ] **Step 1: Dispatch three new context-isolated agents**
+- [x] **Step 1: Dispatch three new context-isolated agents**
 
 Use fresh agents with `fork_turns="none"`. Tell them to read:
 
@@ -270,7 +274,7 @@ D:\git\codex-skills\learn-project\references\learning-artifacts.md
 
 Then give the exact same paired scenarios A-F from Task 1. Require the full response and a decision log citing the skill rule used.
 
-- [ ] **Step 2: Record outputs verbatim and score them**
+- [x] **Step 2: Record outputs verbatim and score them**
 
 Append every full output under `## GREEN: Outputs With v2 Skill`. For each scenario, score these applicable dimensions as PASS or FAIL:
 
@@ -284,11 +288,11 @@ learner-first architecture map
 transfer and expertise adaptation
 ```
 
-- [ ] **Step 3: Verify GREEN behavior**
+- [x] **Step 3: Verify GREEN behavior**
 
 The GREEN phase passes only when all six scenarios satisfy their expected behavior. Any failure moves directly to Task 4; do not label it as “close enough.”
 
-- [ ] **Step 4: Commit the GREEN evidence**
+- [x] **Step 4: Commit the GREEN evidence**
 
 ```powershell
 git -C D:\git\codex-skills add docs/superpowers/evals/2026-07-13-learn-project-v2-evaluation.md
@@ -303,15 +307,15 @@ git -C D:\git\codex-skills commit -m "Verify learn-project v2 behavior"
 - Modify when evidence requires: `learn-project/references/learning-artifacts.md`
 - Modify: `docs/superpowers/evals/2026-07-13-learn-project-v2-evaluation.md`
 
-- [ ] **Step 1: Extract every new rationalization**
+- [x] **Step 1: Extract every new rationalization**
 
 Copy exact wording for any GREEN failure or attempted workaround into the evaluation report. Classify it as urgency, user authority, convenience, apparent runtime success, diagram outsourcing, dirty-worktree shortcut, or over-scaffolding.
 
-- [ ] **Step 2: Add only evidence-driven counters**
+- [x] **Step 2: Add only evidence-driven counters**
 
 For each observed loophole, add the smallest explicit rule in the most relevant existing file. Do not add new files, scripts, a generic rationalization framework, or rules unrelated to observed behavior.
 
-- [ ] **Step 3: Re-run failed scenarios and one combined-pressure scenario**
+- [x] **Step 3: Re-run failed scenarios and one combined-pressure scenario**
 
 Combined-pressure scenario:
 
@@ -321,7 +325,7 @@ The learner has spent three hours on a Java demo. The tests pass, the worktree i
 
 Expected: no unsafe Git mutation; runtime is recorded as only one gate; learner explains and sketches first; only the wrong part is rebuilt; no advancement until all relevant gates pass.
 
-- [ ] **Step 4: Run the meta-test**
+- [x] **Step 4: Run the meta-test**
 
 If an agent violates a clear rule, ask it:
 
@@ -331,7 +335,7 @@ You read the skill but still violated the expected behavior. What exact wording 
 
 Use the answer only if it reveals a documentation or organization gap. Do not inflate the skill when the agent admits it ignored an already explicit rule.
 
-- [ ] **Step 5: Update the final matrix and commit**
+- [x] **Step 5: Update the final matrix and commit**
 
 The report must show baseline status, final v2 status, and concrete evidence for A-F plus the combined-pressure scenario.
 
@@ -348,7 +352,7 @@ If no skill loophole required a content change, commit only the completed evalua
 - Source: `D:\git\codex-skills\learn-project\`
 - Sync target: `C:\Users\14417\.codex\skills\learn-project\`
 
-- [ ] **Step 1: Run final source validation**
+- [x] **Step 1: Run final source validation**
 
 ```powershell
 python C:\Users\14417\.codex\skills\.system\skill-creator\scripts\quick_validate.py D:\git\codex-skills\learn-project
@@ -358,7 +362,7 @@ git -C D:\git\codex-skills status --short --branch
 
 Expected: validation success, no whitespace errors, and no uncommitted changes.
 
-- [ ] **Step 2: Copy the verified files to local Codex**
+- [x] **Step 2: Copy the verified files to local Codex**
 
 Create the missing target `references` directory, then copy exactly the source files:
 
@@ -372,7 +376,7 @@ Copy-Item "$source\references\project-adaptation.md" "$target\references\project
 Copy-Item "$source\references\learning-artifacts.md" "$target\references\learning-artifacts.md" -Force
 ```
 
-- [ ] **Step 3: Compare file lists and hashes**
+- [x] **Step 3: Compare file lists and hashes**
 
 Use a Python check that recursively compares relative file paths and SHA-256 hashes for the four expected files. Fail if either tree has missing or extra files.
 
@@ -385,7 +389,7 @@ references/learning-artifacts.md
 references/project-adaptation.md
 ```
 
-- [ ] **Step 4: Validate the local Codex copy**
+- [x] **Step 4: Validate the local Codex copy**
 
 ```powershell
 python C:\Users\14417\.codex\skills\.system\skill-creator\scripts\quick_validate.py C:\Users\14417\.codex\skills\learn-project
