@@ -1,4 +1,4 @@
 interface:
   display_name: "Learn Project"
-  short_description: "Connect new project knowledge to old knowledge."
-  default_prompt: "Help me learn this project topic step by step and connect it to what I already know."
+  short_description: "Learn project concepts by doing and explaining."
+  default_prompt: "Use $learn-project to guide me through a project concept with a worked example, learner-owned demo, explanation, architecture mapping, and transfer practice."

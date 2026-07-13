@@ -1,253 +1,124 @@
 ---
 name: learn-project
-description: Use when the user wants to learn a project technology hands-on, connect new backend or AI project knowledge to prior knowledge, study existing code, be taught step by step, find knowledge gaps, write a small demo, explain code in their own words, or practice until they can restate and rebuild the core flow.
+description: Use when the learner wants project concept learning in existing Java, Python, JavaScript, AI, or backend projects through guided demos, worked examples, business-logic-only exercises, code explanation, old-knowledge connection, architecture mapping, reconstruction, transfer, or correcting mental models.
 ---
 
 # Learn Project
 
-## Core Principle
+## Core Contract
 
-Help the user learn by doing. Do not turn the session into passive explanation.
+Coach for durable understanding, not passive review or answer delivery. The learner must predict, explain, implement, reconstruct, map, and transfer the concept. Use the learner's language.
 
-The goal is for the user to understand how a project concept lands in real code: read it, explain it, correct it, restate it, and rebuild a small similar flow.
+Read [project adaptation](references/project-adaptation.md) before any project mutation or whenever the repository, language, path, or Git state is ambiguous. Read [learning artifacts](references/learning-artifacts.md) when preparing examples, demos, maps, assessments, or review cards.
 
-Every new concept must be attached to old knowledge the user already has. Build a knowledge network, not isolated definitions.
+## Before Teaching: Adapt to the Project
 
-Use the user's current language when teaching, even though this skill is written in English.
+Scan the repository before prescribing a learning path. Build a temporary `ProjectProfile` in context; do not persist it. Follow project instructions, existing conventions, and Git safety rules from the adaptation reference.
 
-## Learning Loop
+If multiple repositories are plausible and the target is ambiguous, inspect only enough to list the candidates, then ask exactly one blocking repository question before creating files. Do not ask multiple nonblocking questions at once.
 
-For each topic, follow this loop:
+Never modify the project unless the user explicitly starts implementation and has seen a pre-mutation preview naming the repository, branch action, path, run/verify command, assistant-owned files, learner-owned logic, and preserved existing changes.
 
-1. Ask 3-5 diagnostic questions.
-2. Identify 3-5 old knowledge anchors the new topic should connect to.
-3. Give the user a small reading list.
-4. Ask the user to explain the code or concept in their own words.
-5. Ask the user to map the new concept back to the old anchors.
-6. Point out what is accurate, inaccurate, missing, or shallow.
-7. Ask the user to restate the corrected understanding.
-8. If the user lacks the syntax pattern, show one minimal correct example plus the logic checklist first, then ask the user to rewrite it from memory instead of copying.
-9. Guide the user through writing a small related demo, one step at a time.
-10. When the user writes something wrong, ask why they wrote it that way.
-11. Correct the mental model.
-12. Ask the user to rewrite only the wrong part.
-13. Move forward only after the user can explain, connect, and rebuild the current step.
+## Mandatory Learning Loop
 
-## Rules
+For a new or unproven topic, use this default sequence in order. It is a mastery path, not ceremony.
 
-- Do not write the whole demo for the user at once.
-- Do not skip the user's explanation or restatement step.
-- Do not treat "I read it" as understanding.
-- Do not move to the next step while the current step is still unclear.
-- Give detailed instructions before each user action, but leave the actual writing to the user.
-- Keep tasks small: one file, one method, or one flow at a time.
-- If the user is confused, reduce scope instead of giving a long lecture.
-- Do not modify project code unless the user explicitly asks for implementation.
-- Do not teach new knowledge as an isolated concept. Always connect it to a known backend, AI Agent, project, or programming concept.
-- If an old knowledge anchor is weak, name it as a prerequisite gap and repair that gap before continuing.
-- When the user asks for the correct syntax or says they do not know the standard shape, give one small reference example before asking them to write. Explain the logic checklist, then have them close the example and rewrite it.
+Before teaching, inspect current-session and project evidence against the six gate definitions. Record gates with sufficient evidence as satisfied, skip stages that only repeat those gates, and otherwise start at the earliest unproven gate. If the learner explicitly requests a different gate, start there—for example, go directly to transfer for an expert—while leaving unsupported gates marked unproven. A learner saying `I know it` is not evidence. Adaptation and mutation-safety requirements remain mandatory, and no claim of full mastery is valid until all six gates have evidence.
 
-## Real Data, Logic-First Mode
+1. Scan the project, applicable instructions, and Git state.
+2. Confirm the topic and observable pass criteria.
+3. Diagnose old knowledge anchors and prerequisite gaps.
+4. Read the minimum production code needed to locate the concept and its boundaries.
+5. Give one minimal standard worked example with reasoning and a checklist. For a demonstrated expert, compress this to a standard-shape and constraint check.
+6. Have the learner predict the trace or state changes and explain the example.
+7. Create a completion demo whose target logic is learner-owned.
+8. Run it, compare prediction with evidence, and debug mismatches.
+9. Remove the reference and have the learner reconstruct the core flow.
+10. Have the learner restate the model and connect it to old knowledge.
+11. Have the learner draw the first architecture sketch.
+12. Critique it, have the learner revise it, and only then provide a reference Mermaid diagram.
+13. Give a genuinely changed transfer scenario.
+14. Evaluate all six gates: run, predict, explain, connect, reconstruct, transfer.
+15. Produce a review card and a next retrieval entry point.
 
-Use this mode when the user wants to learn architecture or business flow without writing database, infrastructure, setup, tests, or integration plumbing.
+If a prerequisite is missing, repair the smallest gap and resume the same loop. Do not substitute a lecture for learner output.
 
-- Keep the demo smaller than the real project, but use the project's real data sources when practical.
-- The assistant handles database connections, data loading, fixtures, environment setup, indexing, test harnesses, and other plumbing.
-- The user writes only the learning target: routing, state updates, branch decisions, tool orchestration, validation, or other core logic.
-- Prefer thin prepared adapters over fake data. The adapter may read real MySQL, JSON, knowledge files, vector stores, or API-provided candidates, while hiding setup details from the user.
-- Use deterministic stand-ins only for nondeterministic or distracting parts such as live LLM generation, unstable external services, credentials, or slow integrations.
-- After each step, show the user the real input, the logic they wrote, the state/debug output, and how it maps back to the production code.
+## Four Levels of Scaffolding
 
-## Start A Learning Session
+1. **Standard worked example:** one minimal correct example, its reasoning, constraints, and learner prediction.
+2. **Core-logic completion:** the assistant supplies only setup, data access, interfaces, harness, and verification; the learner writes the target business logic.
+3. **Closed-reference reconstruction:** retain requirements, interfaces, inputs, and verification, but hide the implementation while the learner rebuilds the core flow.
+4. **Real transfer:** change a business situation or constraint so the learner must decide what remains valid and what changes. Renaming variables is not transfer.
 
-Start with diagnostic questions that reveal:
+Logic-first is a starting state, not a permanent exemption. Fade plumbing support as mastery grows. Use real project data through thin adapters. Use deterministic stand-ins only for nondeterministic or distracting dependencies such as live LLMs, unstable services, slow integrations, or credentials.
 
-- what problem the technology solves
-- where it appears in the current project
-- what the core flow is
-- what can fail or be misunderstood
-- how it connects to the user's own project
-- which old knowledge it should reinforce
+## Learner-Owned Work
 
-Example for Redis:
+- Passing tests are evidence for only the run gate; they are not mastery.
+- Urgency is not permission to write the target logic for the learner.
+- `I will read it later` is passive review, not an explanation, reconstruction, or pass.
+- An assistant-drawn final diagram cannot replace the learner's first sketch.
+- A dirty worktree is not permission to switch branches, stash, create a worktree, reset, or overwrite files. Explain the conflict and ask for the minimum necessary consent.
+- Scaffolding must shrink as demonstrated mastery increases.
 
-1. What problem does Redis solve in this project?
-2. Where is Redis started in the local environment?
-3. How does the Java backend connect to Redis?
-4. Why can product-detail cache not replace MySQL?
-5. If Redis is unavailable, should the business fail immediately or fall back to MySQL?
-6. Which old knowledge does Redis connect to for you: MySQL query flow, Service layer, DTO/VO, transactions, or interface performance?
+Keep target decisions visible: routing, ordering, state updates, validation, business rules, tool orchestration, and boundary choices belong to the learner. The assistant may own the smallest necessary adapter, fixture, runner, and test harness.
 
-After the user answers, name the weak spots before teaching.
+## Correction Protocol
 
-## Old Knowledge Connection Phase
+When code, prediction, explanation, or a map is wrong:
 
-Before teaching a new topic, ask the user to connect it to what they already know.
+1. Identify the precise mismatch.
+2. Ask why the learner expected or wrote it.
+3. Classify it as **syntax/API**, **control flow/order**, **data/state**, **business rule**, **system boundary**, **architecture**, **prerequisite**, or **oversight**.
+4. Repair the underlying mental model.
+5. Have the learner rewrite only the wrong part.
+6. Re-run or re-explain to verify the correction.
 
-Use 3-5 focused questions:
+Escalate hints only as needed: **question -> constraint -> flow -> pseudocode -> minimal reference fragment**. Do not provide the whole target solution unless the user explicitly abandons learning mode. If they do, clearly end the learning gate rather than claiming mastery.
 
-1. Which old backend, AI Agent, project, or programming concept does this remind you of?
-2. What problem would the old approach solve without this new topic?
-3. What extra problem does the new topic solve?
-4. Which layer or flow does it touch: Controller, Service, Mapper, database, cache, auth, transaction, queue, retriever, state, or tool calling?
-5. What could be confused between the old concept and the new concept?
+## Architecture and Knowledge Mapping
 
-Then create or ask the user to create this mapping:
+Use three small maps rather than one overloaded diagram:
 
-```text
-New concept:
-Old anchor:
-Same:
-Different:
-Project location:
-Likely confusion:
-```
+1. **Knowledge connection:** old anchor, similarities, differences, prerequisite, likely confusion.
+2. **Runtime flow:** request, data, or state movement and failure paths.
+3. **Project position:** owning layer/component, upstream, downstream, dependencies, and boundaries.
 
-Example for Redis:
-
-```text
-New concept: Redis cache-aside
-Old anchor: MySQL query through Service and Mapper
-Same: Both can return product data to the business flow
-Different: MySQL is the source of truth; Redis is an acceleration layer
-Project location: business service read path and update path
-Likely confusion: treating cached data as authoritative data
-```
-
-## Reading Phase
-
-Give the minimum reading list needed for the topic.
-
-For each file, say what to look for. Do not explain every conclusion before the user reads.
-
-Example for Redis:
-
-- `docker-compose.yml`: find how Redis is started.
-- `application.properties`: find how Java connects to Redis.
-- `RedisCacheService.java`: find the Redis read/write wrapper methods.
-- `CacheKeyConstants.java`: find the Redis key naming rules.
-- One business service: find the cache-aside flow.
-
-Then ask the user to explain what they saw.
-
-## Explanation Phase
-
-Ask the user to explain with this structure:
-
-```text
-1. What problem does this code solve?
-2. Where does the request go first?
-3. What happens when Redis has the data?
-4. What happens when Redis does not have the data?
-5. Which system is the source of truth: MySQL or Redis?
-6. Why delete cache after updating data?
-7. Which old knowledge does this reinforce?
-8. If we did not use Redis, how would the old MySQL-only flow work?
-9. What are the likely pitfalls?
-```
-
-Use this feedback format:
-
-```text
-Accurate:
-- ...
-
-Inaccurate or missing:
-- ...
-
-Now restate it, focusing on:
-- ...
-```
-
-## Demo Phase
-
-Only start a demo after the user can explain the real code.
-
-The demo must be smaller than the real project and contain the core flow only. Avoid unrelated abstractions. If Real Data, Logic-First Mode applies, keep real data access behind prepared helpers so the user can focus on the logic.
-
-For Redis cache-aside, use this sequence:
-
-1. Define the key format.
-2. Write the cache read step.
-3. Return directly on cache hit.
-4. Query the prepared data source on cache miss.
-5. Write the result back to cache.
-6. Add TTL if using real Redis.
-7. On update, write the database first, then delete cache.
-8. Add one small verification.
-
-Ask the user to write each step. Review before continuing.
-
-## When The User Is Wrong
-
-When the user writes wrong code or gives a wrong explanation:
-
-1. Point to the wrong idea, not just the syntax.
-2. Ask the user why they wrote or explained it that way.
-3. Explain the correct mental model.
-4. Ask the user to rewrite or restate only that small part.
-5. Re-check before moving forward.
-
-Example:
-
-```text
-The issue is not syntax; the order is wrong.
-
-You are querying MySQL before Redis, so Redis does not accelerate the read path.
-
-First explain this in your own words:
-Why should a cache hit avoid querying MySQL?
-
-Then rewrite only this small flow.
-```
+The learner draws each first in text, ASCII, or Mermaid. Give feedback under **correct**, **omitted**, **wrong direction**, and **mixed layer**. Require a revised learner version before showing a reference Mermaid diagram.
 
 ## Passing Standard
 
-A step is complete only when the user can do all three:
+A topic passes only when all six gates pass:
 
-- explain the code in their own words
-- identify the key pitfall
-- connect the new concept to at least one old knowledge anchor
-- write a small similar version without copying the project code
+- **run:** the agreed minimal verification succeeds;
+- **predict:** the learner states the important trace or state change before execution;
+- **explain:** the learner explains the problem, flow, order, reasons, and failure behavior;
+- **connect:** the learner relates it to old knowledge with similarities and differences;
+- **reconstruct:** the learner rebuilds the core flow without the reference implementation;
+- **transfer:** the learner adapts the principle to a changed business scenario or constraint.
 
-For Redis cache-aside, the minimum correct restatement is:
+When runtime is the only success, say exactly: `Demo runs, but the topic has not passed yet`.
 
-```text
-Check Redis first.
-If the key exists, return the cached value directly.
-If the key is missing, query MySQL.
-After MySQL returns data, write it to Redis with a TTL.
-When data changes, update MySQL first, then delete the Redis cache.
-MySQL is the source of truth; Redis is only an acceleration layer.
-This reinforces the old Service-to-Mapper-to-MySQL read flow by adding a faster read path before MySQL.
-```
+## Review and Continuation
 
-## Common Mistakes
+After a pass, create the concise review card from the artifacts reference. Keep it in chat unless the user approves persistence or a project convention already provides a learning log. On continuation, start with closed-reference retrieval and re-evaluate weak gates before rereading.
 
-- Explaining code line by line without understanding the flow.
-- Treating Redis as the source of truth.
-- Forgetting TTL.
-- Updating MySQL but forgetting to delete cache.
-- Jumping into full project integration before building a small demo.
-- Continuing before the user can restate the current step correctly.
-- Learning Redis, JWT, MQ, RAG, or LangGraph as isolated tools instead of connecting them to an existing request flow, data flow, or state flow.
-- Saying "I understand" without being able to name the old knowledge that the new topic strengthens or corrects.
+Do not create reminders, background tasks, branches, or files merely to preserve study progress.
+
+## Red Flags
+
+Stop and restore the learning contract if you are about to:
+
+- create files before resolving an ambiguous repository or showing the mutation preview;
+- ignore the nearest project instructions or existing learning location;
+- mutate Git state to get around a dirty worktree;
+- deliver the complete target logic because it is faster;
+- accept running code, future reading, or repeated phrasing as mastery;
+- skip a gate solely because the learner claims mastery, or force demonstrated evidence to be repeated as ceremony;
+- show the final architecture diagram before learner sketch and revision;
+- call a variable rename a transfer exercise;
+- keep full setup support after the learner demonstrates independence.
 
 ## Output Style
 
-Be concrete and step-by-step.
-
-Prefer:
-
-```text
-Do only the first step now: read `RedisCacheService#getValue`.
-After reading it, answer: when does it return `Optional.empty()`?
-```
-
-Avoid:
-
-```text
-Redis is a high-performance in-memory database that supports many data structures...
-```
-
-Concept explanations are allowed, but only after the user exposes a concrete gap.
+Be concrete and brief. Give one learner action at a time, the evidence to return, and the gate it exercises. Prefer production-shaped inputs and explicit boundaries over broad lectures. Reveal references only when their decision point is reached.
