@@ -7,158 +7,95 @@ description: Use when a learner can read or follow code but cannot implement it 
 
 ## Core Contract
 
-Build independent coding ability, not answer-recognition confidence. For an unproven topic, establish one correct coding pattern before hiding it, then require reconstruction, transfer, and adaptation.
+Build independent coding ability, not answer-recognition confidence. For an unproven topic, establish one correct pattern before hiding it, then require reconstruction, transfer, and adaptation.
 
-Default learning-time balance:
-
-- **60% learner-written code**;
-- 20% relevant project-code reading;
-- 10% minimum necessary principles;
-- 10% explanation and interview expression.
-
-Use the learner's language. Give one learner action at a time.
+Default learning-time balance: **60% learner-written code**, 20% relevant project-code reading, 10% principles, and 10% explanation/interview expression. Use the learner's language and give one learner action at a time.
 
 ## Boundary With `learn-project`
 
-`learn-project` owns project discovery, concept understanding, architecture maps, and runtime context. `learn-coding` owns deliberate coding practice: complete examples, closed-reference rewrites, tests, hints, review, isomorphic transfer, and changed constraints.
+`learn-project` owns project discovery, concept understanding, architecture maps, and runtime context. `learn-coding` owns deliberate practice: complete examples, closed-reference rewrites, tests, hints, review, isomorphic transfer, and changed constraints.
 
-When both apply:
-
-1. Let `learn-project` identify and contextualize the project concept.
-2. Use `learn-coding` to train its implementation.
-3. Return to the project for integration and design explanation.
-
-Do not repeat a full architecture-learning workflow inside this skill.
+When both apply, let `learn-project` contextualize the concept, use `learn-coding` to train its implementation, then return to the project for integration and design explanation.
 
 ## Before Teaching
 
-Confirm or infer only what is necessary:
+Confirm the topic, language, time, repository context, observable pass condition, and existing implementation evidence. Do not accept “I understand it” as coding evidence. Skip a stage only when current evidence proves its ability.
 
-- target topic and language;
-- available session time;
-- whether a real repository is involved;
-- observable pass condition;
-- existing evidence of independent implementation.
+**Required references:**
 
-Do not accept “I understand it” as coding evidence. Use a short prediction, trace, explanation, or implementation probe. Skip stages only when current evidence proves the corresponding ability; do not repeat mastered work as ceremony.
+- Read [exercise ladder](references/exercise-ladder.md) before creating exercises.
+- Read [review rubric](references/review-rubric.md) before reviewing code.
+- Read [project workspace boundary](references/project-workspace-boundary.md) before repository mutation.
+- Read [Java AI four-week profile](references/java-ai-four-week-profile.md) for the Java-first AI interview program.
 
-Read [exercise ladder](references/exercise-ladder.md) before creating an exercise. Read [review rubric](references/review-rubric.md) before reviewing learner code. Read [project workspace boundary](references/project-workspace-boundary.md) before any repository mutation. Read [Java AI four-week profile](references/java-ai-four-week-profile.md) when the learner requests the Java-first AI interview program.
+## Mandatory Ladder
 
-## Mandatory Ladder for an Unproven Topic
-
-Follow this sequence:
+For an unproven topic:
 
 ```text
-diagnose
--> complete A example
--> predict, run, and explain
--> close reference
--> rewrite from requirements and tests
--> compare and correct
--> close reference and rewrite again
--> B isomorphic transfer
--> changed constraint
--> project transfer
--> interview explanation
+diagnose -> complete A example -> predict/run/explain -> close reference
+-> rewrite -> compare/correct -> rewrite again -> B isomorphic transfer
+-> changed constraint -> project transfer -> interview explanation
 ```
 
-### 1. Complete A Example
+The complete A example must be minimal, correct, runnable, tested, and reasoned. Separate reusable structure from business rules. Ask the learner to predict important flow or state before running it.
 
-Provide one minimal, complete A example that is correct and runnable. Include requirements, implementation, tests, expected observations, decision reasoning, and one common failure. Separate reusable structure from scenario-specific business rules.
+For reconstruction, hide implementation but retain requirements, interfaces, inputs, failure behavior, tests, and run command. The learner writes from a blank file, corrects precise mismatches, then rewrites once more with the reference closed. One memorized rewrite is not transfer.
 
-The learner must predict important flow or state changes before running it, then explain the observed order and failure behavior.
-
-### 2. Closed-Reference Rewrite
-
-Hide the implementation. Retain requirements, interfaces or signatures, inputs, expected observations, failure behavior, tests, and the run command.
-
-The learner rewrites the core logic from a blank file. Run verification, compare precise differences, classify each mismatch, and require focused corrections. Then close the reference and require one more independent rewrite.
-
-The first successful rewrite proves recall, not transfer.
-
-### 3. B Isomorphic Transfer
-
-Change the business scenario while preserving the core structure. A renamed class or entity is not transfer; the learner must decide how the same principle applies to new inputs and rules.
-
-Provide requirements, necessary interfaces, tests, and context, but withhold the complete target implementation by default.
-
-### 4. Changed Constraint
-
-Add one meaningful constraint such as missing data, duplicate input, timeout, retry, concurrency, a new business type, a result contract, tracing, or a source-of-truth change. Require the learner to identify the invariant, changed rule, new flow, smallest design adaptation, and added test.
-
-### 5. Project Transfer and Expression
-
-Only after the isolated exercise passes, consider applying it to production code. Follow the workspace boundary and obtain second approval before production migration.
-
-End with a concise explanation of the problem, flow, key decision, failure behavior, project location, and one interview follow-up.
+For B, preserve the principle but change a real business decision. Renaming entities is not transfer. Then add one changed constraint such as missing data, duplicate input, timeout, retry, concurrency, a new type, tracing, or source-of-truth ownership.
 
 ## Answer-Reveal Policy
 
 | Stage | Complete answer |
 | --- | --- |
-| First A example | Required |
-| A example explanation | Visible |
-| First closed-reference rewrite | Hidden |
-| Post-attempt comparison | May be shown |
-| Second rewrite | Hidden again |
+| First A example and explanation | Required and visible |
+| First/second reconstruction | Hidden |
+| Post-attempt comparison | May be shown, then close it again |
 | B isomorphic transfer | Hidden by default |
 | Changed constraint | Hidden by default |
-| Learner explicitly exits learning mode | Allowed, but do not claim mastery |
+| Learner explicitly exits learning mode | Allowed; do not claim mastery |
 
-When the learner is stuck, escalate exactly one rung at a time:
+Escalate one hint rung per attempt:
 
 ```text
 question -> constraint -> relevant API reminder -> flow -> pseudocode -> minimal code fragment
 ```
 
-Do not hide the first correct pattern from a novice. Do not reveal the later target implementation merely because withholding it is slower.
-
-## Learner-Owned Decisions
-
-The assistant may own the complete A reference, deterministic fixtures, adapters, interfaces, runner, and verification harness. The learner owns the reconstruction and transfer decisions: routing, ordering, state changes, validation, business rules, failure policy, and refactoring choices.
-
-Do not leak the target algorithm through comments, test names, fixture values, helper names, or pseudocode supplied too early.
+The assistant may own the A reference, fixtures, adapters, interfaces, runner, and harness. The learner owns reconstruction and transfer decisions: routing, order, state, validation, business rules, failure policy, and refactoring. Do not leak those decisions through tests, comments, fixtures, helper names, or early pseudocode.
 
 ## Repository Mutation Safety
 
-Reading may occur on the current branch. Before creating files:
+Before creating files, inspect the selected repository, instructions, Git status, build commands, and learning conventions. Prefer an approved isolated learning worktree and a non-production learning location.
 
-1. inspect the selected repository, applicable instructions, Git status, build commands, and existing learning locations;
-2. prefer an approved isolated learning worktree and an existing learning convention;
-3. show the complete pre-mutation preview from the workspace reference;
-4. wait for explicit approval;
-5. keep A, reconstruction, B, and changed-constraint work outside production source by default;
-6. request second approval before modifying production code.
+Show the complete pre-mutation preview from the workspace reference and wait for explicit approval. Keep A, reconstruction, B, and changed-constraint files outside production source. Obtain **second approval** before production migration.
 
-Never switch, stash, reset, overwrite, remove, or work around unrelated dirty changes. Never merge the learning branch automatically.
+Never switch, stash, reset, overwrite, remove, or work around unrelated dirty changes. Never merge a learning branch automatically.
 
 ## Review and Passing Standard
 
-Review correctness and decisions before style. Classify mismatches, repair the smallest underlying gap, and require the learner to rewrite the affected part.
+Review correctness and decisions before style. Classify the mismatch, repair the smallest underlying gap, and require the learner to rewrite the affected part.
 
 A topic passes only when the learner can:
 
-1. run the A example and explain its important flow;
-2. reconstruct the core logic with the reference closed;
-3. solve the B isomorphic transfer without copying the A implementation;
-4. adapt to one changed constraint and add verification;
+1. run and explain A;
+2. reconstruct with the reference closed;
+3. solve B without copying A;
+4. handle one changed constraint and add verification;
 5. explain the design, failure behavior, and project position.
 
-Passing tests alone means the code runs; it does not prove independent coding ability.
+Passing tests alone means code runs, not that independent coding ability passed.
 
 ## Red Flags
 
-Stop and restore the contract if you are about to:
+Stop if you are about to:
 
-- give only incomplete scaffolding before the learner has seen a correct pattern;
-- show the whole B or changed-constraint solution at the first sign of difficulty;
+- give only incomplete scaffolding before showing a correct pattern;
+- reveal B or the changed-constraint solution at the first difficulty;
 - accept one memorized rewrite or happy-path test as mastery;
-- call a renamed scenario a transfer exercise;
-- create files before repository selection and mutation approval;
-- place initial exercises directly in production source;
-- overwrite dirty work or migrate to production without second approval;
+- call a renamed scenario transfer;
+- create files before mutation approval;
+- place initial exercises in production source;
+- overwrite dirty work or migrate without second approval;
 - take back learner-owned decisions because completing them is faster.
 
-## Output Style
-
-Be concrete and brief. State the current stage, one learner action, the evidence to return, and the exact run command when files exist. Reveal the next artifact only when its decision point is reached.
+State the current stage, one learner action, evidence to return, and exact run command when files exist. Reveal the next artifact only at its decision point.
