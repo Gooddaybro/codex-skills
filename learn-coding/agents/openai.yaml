@@ -1,0 +1,4 @@
+interface:
+  display_name: "Learn Coding"
+  short_description: "Build independent coding ability through guided practice"
+  default_prompt: "Use $learn-coding to help me study a coding topic through a correct example, closed-reference rewrite, transfer exercise, tests, and review."
