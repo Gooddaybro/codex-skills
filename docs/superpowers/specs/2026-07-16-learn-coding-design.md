@@ -1,113 +1,264 @@
-# `learn-coding` Skill Design
+# `learn-coding` Skill 开发设计文档
 
-**Date:** 2026-07-16  
-**Status:** Approved for specification review
+**日期：** 2026-07-16
+**状态：** 等待用户审阅，尚未进入开发
 
-## Purpose
+## 1. 开发目标
 
-Create a reusable Codex skill for learners who can follow or understand code but cannot yet implement core logic independently. The skill converts conceptual understanding into coding ability through deliberate practice, with Java as the primary language and Python as a supporting language.
+创建一个可复用的 Codex Skill，帮助“能够看懂代码，但无法独立写出代码”的学习者，把概念理解逐步转化为独立编码能力。
 
-The first target is a four-week Java AI interview-learning program tied to the user's clothing recommendation project, but the skill must remain reusable for other backend and AI application projects.
+首个学习配置用于四周 Java AI 面试训练：
 
-## Boundary With `learn-project`
+- Java 为主要编码语言；
+- Python 用于阅读和少量修改 RAG、Agent 代码；
+- 约 60% 的学习时间必须由学习者亲自写代码；
+- 学习内容与服装推荐项目中的架构边界、RAG、Agent 和工程化问题结合；
+- 先提供完整、正确、可运行的范例，再进行默写、迁移和重构。
 
-The repository already contains `learn-project`. The two skills remain separate and may be used together.
+Skill 需要保持通用，后续可以用于其他 Java 后端、Python AI 应用或普通业务项目。
 
-| Skill | Owns | Does not own |
+## 2. 与 `learn-project` 的职责边界
+
+同一个 `codex-skills` 仓库可以同时存放多个 Skill。本次保留 `learn-project`，新增独立的 `learn-coding`。
+
+| Skill | 主要解决的问题 | 不负责的内容 |
 | --- | --- | --- |
-| `learn-project` | Project discovery, concept learning, architecture mapping, runtime flow, mastery gates, transfer into a real repository | Repeated coding-volume plans and coding-muscle drills as a primary purpose |
-| `learn-coding` | Coding diagnosis, progressive exercises, hint control, blank-file reconstruction, tests, review, timed rewrites, and coding progress evidence | Full project architecture analysis or broad conceptual curriculum design |
+| `learn-project` | 如何理解真实项目、运行链路、架构边界和技术概念 | 不以高频、重复的编码训练为主要目标 |
+| `learn-coding` | 如何把理解转化为能够独立写出的代码 | 不重复完成完整的项目架构分析和知识地图 |
 
-When both apply, `learn-project` selects and contextualizes the project concept; `learn-coding` turns that concept into a progressive coding practice sequence; the learner then returns to the project to validate integration and explain design trade-offs.
+两个 Skill 同时使用时：
 
-## Triggering Conditions
+```text
+learn-project 选择并解释项目知识点
+        ↓
+learn-coding 把知识点转换为范例、默写题、迁移题和重构题
+        ↓
+学习者回到真实项目验证代码并解释设计取舍
+```
 
-Use `learn-coding` when the learner says they:
+## 3. 触发条件
 
-- understand examples but cannot write code independently;
-- rely on copying, autocomplete, or complete AI solutions;
-- want coding drills, deliberate practice, blank-file reconstruction, or code-writing confidence;
-- want Java-first backend or AI-application coding practice;
-- need exercises, hints, tests, review, and interview follow-ups rather than another lecture.
+出现以下学习诉求时使用 `learn-coding`：
 
-Do not trigger it merely because code appears in a normal implementation request. The user must be learning or deliberately practicing coding.
+- “代码能看懂，但是自己写不出来”；
+- “先给我正确范例，然后让我默写”；
+- “我太依赖复制、自动补全或 AI 完整答案”；
+- “给我 Java 编码练习、测试和逐级提示”；
+- “我要从空文件重写、限时训练或做变式题”；
+- “帮我训练编码能力，而不是继续讲理论”。
 
-## Core Learning Contract
+普通的软件开发请求即使涉及代码，也不应自动进入学习模式。只有用户明确表达学习、练习或提升独立编码能力时才触发。
 
-Allocate approximately 60% of learning time to learner-written code, 20% to reading relevant project code, 10% to principles, and 10% to explanation and interview expression. Adjust only when evidence shows a prerequisite gap or the user explicitly chooses a different intensity.
+## 4. 核心原则：先建立正确范式，再训练独立输出
 
-For each topic, use four coding rounds:
+初学者如果不知道正确实现的结构，只给接口和待补全标记容易变成盲猜。因此，`learn-coding` 不采用“一开始就隐藏答案”的方式。
 
-1. **Minimal worked example:** show one small standard example and ask the learner to predict its behavior.
-2. **Core-logic completion:** provide interfaces, fixtures, and tests; leave target decisions and business logic to the learner.
-3. **Closed-reference reconstruction:** remove the reference implementation and require a rewrite from requirements and tests.
-4. **Constraint variation:** add a meaningful failure mode or changed constraint, such as timeout, duplicate input, missing data, concurrency, retry, or a different business rule.
+每个新知识点必须先提供一个完整、正确、规模足够小的 A 范例题。范例需要包含：
 
-The assistant may own setup, deterministic fixtures, adapters, and the test harness. The learner owns routing, ordering, validation, state changes, business rules, error behavior, and other target decisions.
+- 明确的需求和边界；
+- 完整、可运行的代码；
+- 能够验证行为的单元测试；
+- 输入、输出和关键执行过程；
+- 类、方法和数据结构的拆分理由；
+- 通用代码结构与业务规则的区别；
+- 至少一个常见错误及其失败原因。
 
-## Session Flow
+学习者完成运行、预测和解释以后，才能关闭范例进入默写。
 
-1. Identify the target language, available time, topic, repository context, and observable pass condition.
-2. Diagnose the smallest current coding gap with one short task; do not infer ability from self-rating alone.
-3. Select the earliest appropriate coding round from demonstrated evidence.
-4. Present exactly one learner action at a time.
-5. Withhold the complete target solution while learning mode remains active.
-6. Escalate help gradually: question → constraint → relevant API reminder → flow sketch → pseudocode → minimal code fragment.
-7. Run tests or request executable evidence after each implementation attempt.
-8. Review the attempt by failure category and require the learner to correct the smallest wrong part.
-9. Require a closed-reference rewrite before claiming independent coding ability.
-10. Give one genuine variation and one short explanation or interview follow-up.
-11. Record a concise evidence summary and choose the next retrieval exercise.
+## 5. 双题四阶段训练模型
 
-## Review Categories
+### 阶段一：A 范例题——完整正确示范
 
-Classify feedback so the learner knows what to repair:
+Codex 提供一份完整、正确、可运行的最小范例。学习者需要：
 
-- syntax or API usage;
-- control flow or execution order;
-- data modeling or state updates;
-- business rules;
-- boundary and error handling;
-- testing and observability;
-- design and decomposition;
-- oversight versus missing prerequisite.
+1. 先预测主要输出或状态变化；
+2. 运行代码和测试；
+3. 按执行顺序解释代码；
+4. 标出通用结构与业务规则；
+5. 回答一至两个“为什么这样设计”的问题。
 
-Review behavior, correctness, and decisions before style. Do not rewrite the whole answer when a focused correction is sufficient.
+这个阶段允许展示完整答案，因为目标是建立正确的代码范式。
 
-## Four-Week Java AI Profile
+### 阶段二：关闭范例——默写与差异纠正
 
-Provide this profile when the learner wants the agreed interview-oriented program:
+关闭 A 范例的实现，只保留：
 
-| Week | Topic | Java learner-owned exercises | Supporting project work |
+- 需求说明；
+- 必要的类名、接口或方法签名；
+- 输入输出示例；
+- 单元测试和运行命令。
+
+学习者从空文件默写核心逻辑。完成后执行：
+
+1. 运行测试；
+2. 对比学习者代码与参考实现；
+3. 按错误分类指出精确差异；
+4. 只让学习者修正错误部分；
+5. 再次关闭答案，完成一次独立重写。
+
+第一次默写通过只表示形成了初步记忆，不代表已经具备迁移能力。
+
+### 阶段三：B 同构题——验证是否真正理解
+
+提供一题结构相同、业务场景不同的练习。例如：
+
+```text
+A 范例题：根据服装推荐意图选择 Tool
+B 同构题：根据售后请求选择退款、物流或人工客服 Tool
+```
+
+B 题只提供需求、接口、测试和必要上下文，不立即提供完整实现。帮助按照以下顺序逐级增加：
+
+```text
+提问 → 约束提醒 → 相关 API 提醒 → 流程图 → 伪代码 → 最小代码片段
+```
+
+只有用户明确退出学习模式时，才可以直接交付 B 题的完整目标实现；退出后不得声称该知识点已掌握。
+
+### 阶段四：增加约束——重构与真实项目迁移
+
+在基础代码正确以后，加入一个真正改变设计的约束：
+
+- 空值或缺失数据；
+- 重复输入或重复注册；
+- 超时、重试或熔断；
+- 并发访问；
+- 新增业务类型；
+- 统一结果和错误契约；
+- Trace 和指标记录；
+- 与真实项目接口集成。
+
+学习者修改设计、补充测试并解释取舍。只修改变量名或业务名不算变式训练。
+
+## 6. 完整学习闭环
+
+```text
+确定知识点和通过标准
+        ↓
+展示 A 题完整正确范例
+        ↓
+预测、运行、解释
+        ↓
+关闭范例，从空文件默写
+        ↓
+测试、差异分析、局部纠正
+        ↓
+再次关闭答案独立重写
+        ↓
+完成 B 同构业务题
+        ↓
+加入异常或工程约束
+        ↓
+重构、补测试、回到真实项目
+        ↓
+回答面试追问并记录证据
+```
+
+每次只给学习者一个明确动作，避免同时布置大量任务。
+
+## 7. 答案展示规则
+
+| 场景 | 是否展示完整答案 | 原因 |
+| --- | --- | --- |
+| A 范例题首次学习 | 是 | 建立正确、标准的代码范式 |
+| A 题讲解和运行 | 是 | 帮助理解结构与执行过程 |
+| A 题默写 | 否 | 训练回忆和独立输出 |
+| A 题默写后的对比 | 可以展示 | 用于发现精确差异 |
+| A 题第二次重写 | 否 | 验证纠正后的独立输出 |
+| B 同构题 | 默认否 | 验证理解是否能够迁移 |
+| 约束重构题 | 默认否 | 训练设计和问题解决能力 |
+| 用户明确退出学习模式 | 可以 | 允许转为普通交付，但不判定掌握 |
+
+## 8. 时间和训练权重
+
+默认时间分配：
+
+- 60%：学习者独立写代码；
+- 20%：阅读和定位真实项目代码；
+- 10%：学习必要原理；
+- 10%：代码解释和面试表达。
+
+这不是固定计时器。如果诊断发现缺少必要前置知识，可以暂时补齐最小缺口，然后立即回到编码训练。
+
+## 9. 错误分类与反馈方式
+
+反馈必须标明错误属于哪一类：
+
+- 语法或 API 使用；
+- 控制流程或执行顺序；
+- 数据结构或状态更新；
+- 业务规则；
+- 系统边界或异常处理；
+- 测试和可观测性；
+- 类、方法或模块拆分；
+- 粗心遗漏；
+- 前置知识不足。
+
+先评价正确性、行为和关键决策，再评价代码风格。能够局部修正时，不直接重写学习者的全部实现。
+
+## 10. 四周 Java AI 学习配置
+
+| 周次 | 学习主题 | Java 练习 | 项目结合 |
 | --- | --- | --- | --- |
-| 1 | Architecture and fact boundaries | DTO validation, product-fact filtering, result contracts, SSE event conversion | Trace Java → Python request and distinguish database facts from model output |
-| 2 | RAG | text chunking, Top-K filtering, threshold rejection, citation assembly | Read the Python retrieval path and interpret retrieval evaluation evidence |
-| 3 | Agent | intent routing, `ToolRegistry`, state updates, conditional transitions, maximum-step protection | Trace the existing Agent/LangGraph path and compare pipeline versus Agent behavior |
-| 4 | Engineering | timeout/retry policy, simplified circuit breaker, trace events, deterministic evaluation runner | Explain reliability, safety, observability, and project trade-offs in mock interviews |
+| 第 1 周 | 架构和事实边界 | DTO 校验、商品事实过滤、统一结果、SSE 事件转换 | 跟踪 Java → Python 请求，区分数据库事实与模型生成内容 |
+| 第 2 周 | RAG | 文本切块、Top-K 筛选、阈值拒答、引用结果组装 | 阅读 Python 检索链路并解释评估数据 |
+| 第 3 周 | Agent | 意图路由、`ToolRegistry`、状态更新、条件跳转、最大步数 | 跟踪 Agent/LangGraph 路径，比较 Pipeline 与 Agent |
+| 第 4 周 | 工程化 | 超时重试、简化熔断、Trace、确定性评估器 | 解释可靠性、安全、观测和设计取舍 |
 
-Default weekly output:
+默认每周产出：
 
-- at least four focused Java exercises;
-- one project-bound integrated exercise;
-- tests for every exercise;
-- one closed-reference timed rewrite;
-- one changed-constraint exercise;
-- one concise code-design explanation.
+- 至少四个 Java 小练习；
+- 一个与服装推荐项目绑定的综合题；
+- 每个练习都有测试；
+- 一次关闭答案的限时重写；
+- 一道真正改变约束的变式题；
+- 一次简短的代码设计和面试表达。
 
-Python is used for reading, small modifications, and understanding RAG or Agent implementation. It must not displace the Java-first coding objective unless the learner explicitly changes the profile.
+Python 主要用于阅读、运行和小范围修改 RAG/Agent 代码，不取代 Java 主练目标。
 
-## Passing Standard
+## 11. 示例：`ToolRegistry` 的训练方式
 
-A topic passes only when the learner can:
+### A 范例题
 
-1. make the provided tests pass;
-2. explain the important control flow, state changes, and failure behavior;
-3. reconstruct the core logic without seeing the reference implementation;
-4. adapt it to one changed business or engineering constraint.
+完整展示一个小型 Java 工具注册和调用系统：
 
-Passing tests alone means the attempt runs; it does not prove independent coding ability.
+```text
+用户请求 → IntentRouter → ToolRegistry → Tool.execute → ToolResult
+```
 
-## Skill Contents
+范例包含三个 Tool、重复注册校验、未知 Tool 的错误结果以及 JUnit 测试。
+
+### A 题默写
+
+隐藏实现，保留 `Tool` 接口、测试和需求。学习者重新实现 `ToolRegistry` 的注册、查询和执行逻辑。
+
+### B 同构题
+
+把服装推荐工具切换为售后工具：退款查询、物流查询和人工客服。学习者自行决定路由结果和错误处理。
+
+### 重构题
+
+加入以下一个或多个约束：
+
+- Tool 执行超时；
+- 并发读取注册表；
+- 重复注册策略；
+- Trace 记录；
+- 添加新 Tool 时不能修改路由器核心代码。
+
+## 12. 掌握标准
+
+一个知识点只有同时满足以下条件才算通过：
+
+1. A 范例能够运行，并能解释关键执行流程；
+2. 关闭参考实现后，能够从空文件重写核心逻辑；
+3. 能够完成 B 同构题，而不是只复现原答案；
+4. 能够处理一个新增约束并补充测试；
+5. 能够说明设计理由、失败行为和项目中的使用位置。
+
+仅仅让测试通过，只能说明当前代码可运行，不能证明已经具备独立编码能力。
+
+## 13. Skill 文件结构
 
 ```text
 learn-coding/
@@ -120,32 +271,39 @@ learn-coding/
     └── java-ai-four-week-profile.md
 ```
 
-- `SKILL.md` contains triggers, the core contract, session loop, hint policy, pass criteria, and coordination with `learn-project`.
-- `exercise-ladder.md` defines how to construct the four coding rounds without leaking the solution.
-- `review-rubric.md` defines evidence and feedback categories.
-- `java-ai-four-week-profile.md` contains the reusable four-week program and exercise bank.
-- `agents/openai.yaml` exposes concise UI metadata generated from the final skill.
+- `SKILL.md`：触发条件、核心规则、学习闭环、答案展示规则、通过标准及与 `learn-project` 的协作边界。
+- `exercise-ladder.md`：A 范例、默写、B 同构题和约束重构的生成方法。
+- `review-rubric.md`：错误分类、提示升级和掌握证据。
+- `java-ai-four-week-profile.md`：四周学习安排及 Java 练习题库。
+- `agents/openai.yaml`：Skill 在 Codex 中显示的名称、简介和默认提示词。
 
-No scripts or assets are required in the first version. Tests will use realistic prompt scenarios and skill validation rather than a runtime utility.
+首个版本不需要脚本和素材文件。
 
-## Validation Strategy
+## 14. Skill 自身的测试方案
 
-Follow a RED–GREEN–REFACTOR cycle for the skill itself:
+开发时采用 RED–GREEN–REFACTOR：
 
-1. Run baseline learning prompts against the repository without `learn-coding` and record whether the response over-explains, provides complete code, skips diagnosis, or accepts passing tests as mastery.
-2. Create the minimal skill that corrects observed failures.
-3. Run the same prompts with the skill explicitly loaded.
-4. Add only the safeguards needed for newly observed failures.
-5. Run the official skill validator and inspect `agents/openai.yaml` for consistency.
+1. 在没有 `learn-coding` 的情况下运行基线学习场景，记录默认响应的问题；
+2. 编写最小 Skill，修复已经观察到的问题；
+3. 使用相同场景加载 Skill 后重新测试；
+4. 只针对新发现的漏洞补充规则；
+5. 运行官方 Skill 校验器；
+6. 检查 `agents/openai.yaml` 与 `SKILL.md` 是否一致。
 
-Minimum scenarios:
+最低测试场景：
 
-- learner asks for complete code despite stating the goal is independent practice;
-- learner's code passes a narrow happy-path test but fails a boundary variation;
-- learner can explain a Java Agent concept but cannot reconstruct its core logic;
-- ordinary implementation request that should not trigger learning mode;
-- combined `learn-project` and `learn-coding` request where responsibilities must remain distinct.
+- 学习者不知道正确结构，需要先看完整范例；
+- 学习者看完范例后要求立即再看答案，而不是进行默写；
+- 学习者能够默写 A 题，但无法完成 B 同构题；
+- 学习者的代码只通过正常路径，遗漏边界条件；
+- 学习者要求完整答案，但同时声称目标是独立练习；
+- 普通开发请求不应错误触发学习模式；
+- `learn-project` 与 `learn-coding` 同时使用时职责不能混淆。
 
-## Delivery
+## 15. 开发与交付方式
 
-Develop on branch `codex/learn-coding` in an isolated worktree. Preserve the user's existing uncommitted `learn-project` changes in the main checkout. After validation, commit the skill, push the branch to `Gooddaybro/codex-skills`, and present the user with the pushed branch or pull request for review.
+- 在独立 worktree 的 `codex/learn-coding` 分支开发；
+- 不触碰本地 `learn-project` 尚未提交的修改；
+- 用户确认本文档以后才开始实现；
+- 完成后运行验证、提交并推送到 `Gooddaybro/codex-skills`；
+- 推送后向用户提供分支或 Pull Request 供最终检查。
