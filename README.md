@@ -1,76 +1,108 @@
 # Codex Skills
 
-This repository stores reusable personal Codex skills and is the source of truth. The macOS installation below links Codex directly to the checkout, while this Windows setup uses an exact synchronized directory copy.
+Personal reusable Codex skills. This GitHub repository is the source of truth; install individual skill directories into `~/.codex/skills`.
 
-## learn-project
+## Available Skills
 
-`learn-project` v2 is an adaptive learning coach for concepts in existing Java, Python, JavaScript, AI, and backend projects. It first profiles the selected repository, its instructions, Git state, build commands, existing learning locations, architecture, and usable data sources.
+### `learn-project`
 
-The learning progression is evidence-driven:
+Use `learn-project` to understand concepts inside an existing Java, Python, JavaScript, AI, or backend project. It profiles the repository, maps architecture and runtime flow, connects new concepts to prior knowledge, and checks mastery through run, predict, explain, connect, reconstruct, and transfer evidence.
 
-1. inspect the minimum production code and connect the topic to old knowledge;
-2. study and predict one minimal standard worked example;
-3. implement learner-owned core logic inside assistant-provided plumbing;
-4. run, compare, and correct the underlying mental model;
-5. reconstruct the core flow with the reference closed;
-6. draw learner-first knowledge, runtime, and project-position maps before seeing a reference diagram;
-7. transfer the principle to a genuinely changed business scenario.
+### `learn-coding`
 
-A topic passes only after all six gates pass: **run, predict, explain, connect, reconstruct, and transfer**. Passing tests alone is not mastery.
+Use `learn-coding` when code is understandable but difficult to write independently. It follows an example-first practice ladder:
 
-The skill supports business-logic-only exercises while still preferring real project data through thin adapters. Deterministic stand-ins are reserved for nondeterministic or distracting dependencies.
+```text
+complete correct reference example
+-> closed-reference rewrite
+-> second reconstruction
+-> isomorphic transfer
+-> changed-constraint refactor
+-> project application and interview explanation
+```
 
-## Install on macOS
+The first correct example is visible; later target logic remains learner-owned. Initial exercises use an approved project-local learning worktree and stay outside production source. Production migration requires separate approval.
+
+### Using Them Together
+
+`learn-project` finds and explains the project concept. `learn-coding` turns that concept into deliberate implementation practice. Return to the project afterward to integrate and explain design trade-offs.
+
+## Install on macOS or Linux
+
+Clone the source repository:
 
 ```bash
 git clone git@github.com:Gooddaybro/codex-skills.git ~/codex-skills
 mkdir -p ~/.codex/skills
-ln -s ~/codex-skills/learn-project ~/.codex/skills/learn-project
 ```
 
-For later source updates:
+Link the skills you want:
+
+```bash
+for skill in learn-project learn-coding; do
+  ln -sfn "$HOME/codex-skills/$skill" "$HOME/.codex/skills/$skill"
+done
+```
+
+Update later with:
 
 ```bash
 git -C ~/codex-skills pull --ff-only
 ```
 
-The symlink already points to the checkout, so no separate copy or synchronization step is needed. Restart Codex after installing or updating.
+Restart Codex after installing or updating.
 
 ## Install or Synchronize on Windows
 
-The GitHub checkout is the source of truth. For the first install:
+Clone the source repository once:
 
 ```powershell
 git clone git@github.com:Gooddaybro/codex-skills.git $env:USERPROFILE\codex-skills
 ```
 
-For later source updates:
+Pull later updates:
 
 ```powershell
 git -C $env:USERPROFILE\codex-skills pull --ff-only
 ```
 
-After validating the source, mirror it into the local Codex skill directory:
+Mirror each desired skill into the local Codex skill directory:
 
 ```powershell
-$source = "$env:USERPROFILE\codex-skills\learn-project"
-$target = "$env:USERPROFILE\.codex\skills\learn-project"
-if ((Test-Path $target) -and ((Get-Item -Force $target).Attributes -band [IO.FileAttributes]::ReparsePoint)) {
-    throw "Target must be a directory copy, not a junction or symlink."
+$skills = @('learn-project', 'learn-coding')
+foreach ($skill in $skills) {
+    $source = "$env:USERPROFILE\codex-skills\$skill"
+    $target = "$env:USERPROFILE\.codex\skills\$skill"
+
+    if ((Test-Path $target) -and
+        ((Get-Item -Force $target).Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+        throw "$target must be a directory copy, not a junction or symlink."
+    }
+
+    New-Item -ItemType Directory -Force $target | Out-Null
+    robocopy $source $target /MIR /R:2 /W:1
+    if ($LASTEXITCODE -ge 8) {
+        throw "Skill synchronization failed for $skill with robocopy exit code $LASTEXITCODE."
+    }
 }
-New-Item -ItemType Directory -Force $target | Out-Null
-robocopy $source $target /MIR /R:2 /W:1
-if ($LASTEXITCODE -ge 8) { throw "Skill synchronization failed with robocopy exit code $LASTEXITCODE." }
 ```
 
-The local Windows Codex path is an exact synchronized copy, not a junction. `/MIR` removes stale local files and overwrites local skill changes, so edit only the source repository. Verify the mirror before relying on it, then restart Codex.
+`/MIR` removes stale local files and overwrites local skill changes. Edit the GitHub checkout, not the synchronized copy. Restart Codex after synchronization.
 
 ## Usage
 
-Mention the skill explicitly:
+Invoke one skill explicitly:
 
 ```text
-$learn-project
+$learn-project Explain how state moves through the Agent workflow in this repository.
 ```
 
-Or ask Codex to teach a project concept through a worked example, learner-owned demo, reconstruction, architecture mapping, and transfer practice.
+```text
+$learn-coding Teach me Java ToolRegistry. Show one complete correct example first, then close it and make me rewrite it.
+```
+
+Use both when project understanding and coding practice are needed:
+
+```text
+Use $learn-project to locate and explain the recommendation routing flow, then use $learn-coding to train me to reconstruct an equivalent Java router and solve a transfer exercise.
+```
