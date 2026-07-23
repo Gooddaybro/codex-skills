@@ -1,4 +1,4 @@
 interface:
   display_name: "Learn Project"
-  short_description: "Learn project concepts by doing and explaining."
-  default_prompt: "Use $learn-project to guide me through a project concept with a worked example, learner-owned demo, explanation, architecture mapping, and transfer practice."
+  short_description: "Learn project concepts via micro-lessons, prediction, and mastery gates."
+  default_prompt: "Use $learn-project to teach me one project concept: objective, micro-lesson, predict-before-example, learner-owned demo, maps, reconstruction, and transfer. One action at a time."

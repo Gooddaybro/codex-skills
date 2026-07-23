@@ -1,21 +1,48 @@
 # Learning Artifacts
 
-Use these templates when preparing examples, demos, maps, assessments, and review cards. Keep each artifact focused on one concept or core flow.
+Use these templates when preparing examples, demos, maps, assessments, and review cards. Keep each artifact focused on one concept or core flow. For how to teach each level, see [teaching-playbook.md](teaching-playbook.md).
+
+## Level 0: Micro-Lesson and Objective
+
+Before Level 1, assistant fills and shows:
+
+```text
+Hook (project pain in 1 sentence):
+Objective (one Bloom-style observable action):
+Old-knowledge anchor (similar + different):
+Definition:
+Positive example:
+Counterexample:
+Decision points to watch (2–3):
+Boundary / failure mode (exactly one):
+```
+
+Learner returns before any full solution reveal:
+
+```text
+30-second restatement:
+Predicted branch/trace for the upcoming example:
+Predicted state changes:
+What I am still unsure about:
+```
+
+Do not open Level 1 reveal until prediction is present (experts may compress, not skip prediction entirely unless that gate is already evidenced).
 
 ## Level 1: Worked Example and Prediction
 
-Assistant provides:
+Assistant provides **after** learner prediction:
 
 ```text
 Problem and production mapping:
 Input and expected output:
 Minimal standard implementation:
-Reasoning for each important decision:
+Reasoning for each important decision (decision-point cards only):
 Constraint and pitfall checklist:
 Minimal run command:
+Prediction vs reality diff prompts:
 ```
 
-Before running, learner provides:
+Before running, learner provides (or updates):
 
 ```text
 Predicted branch/trace:
@@ -24,7 +51,7 @@ Expected output:
 Reason for the order:
 ```
 
-Compare prediction with evidence. A demonstrated expert may receive only the standard shape, constraints, and checklist before proceeding.
+Compare prediction with evidence. A demonstrated expert may receive only the standard shape, constraints, and checklist before proceeding—still after a prediction or an already-proven predict gate.
 
 ## Level 2: Core-Logic Completion
 
@@ -74,6 +101,30 @@ Smallest adaptation:
 ```
 
 A variable, type, or entity rename without a changed decision is not transfer.
+
+## Explanation Artifact
+
+Accept only when complete:
+
+```text
+Problem in project terms:
+Decision points in order:
+Success path:
+Failure / degraded path:
+Ownership boundary:
+```
+
+## Review Card (after pass)
+
+```text
+Topic:
+Objective:
+Core decision points:
+Common pitfall:
+One closed-reference prompt (24h):
+One transfer prompt (7d):
+Gates evidenced:
+```
 
 ## Real Data and Deterministic Dependencies
 
